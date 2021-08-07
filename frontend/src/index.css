@@ -1,0 +1,13 @@
+main {
+  min-height: 80vh;
+}
+
+a {
+  color: var(--bs-gray-dark);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--bs-gray-dark);
+  text-decoration: underline;
+}
