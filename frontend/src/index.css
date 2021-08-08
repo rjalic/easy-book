@@ -11,3 +11,7 @@ a:hover {
   color: var(--bs-gray-dark);
   text-decoration: underline;
 }
+
+.react-datepicker__input-container input {
+  width: 100%;
+}

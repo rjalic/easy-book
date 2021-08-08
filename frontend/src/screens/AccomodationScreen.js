@@ -1,13 +1,16 @@
-import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Image, ListGroup, Card, Button } from 'react-bootstrap';
+import { Row, Col, Image, ListGroup, Button } from 'react-bootstrap';
 import Rating from '../components/Rating';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
+import DatePicker from 'react-datepicker';
 import { listAccomodationDetails } from '../actions/accomodationActions';
 
 const AccomodationScreen = ({ match }) => {
+  const [fromDate, setFromDate] = useState(Date.now());
+  const [toDate, setToDate] = useState(Date.now() + 24 * 60 * 60 * 1000);
+
   const dispatch = useDispatch();
 
   const accomodationDetails = useSelector((state) => state.accomodationDetails);
@@ -19,53 +22,89 @@ const AccomodationScreen = ({ match }) => {
 
   return (
     <>
-      <Link className='btn btn-primary my-3' to='/'>
-        Back
-      </Link>
       {loading ? (
         <Loader />
       ) : error ? (
         <Message variant='danger'>{error}</Message>
       ) : (
-        <Row>
-          <Col md={6}>
-            <Image src={accomodation.image} alt={accomodation.name} fluid />
-          </Col>
-          <Col md={3}>
+        <>
+          <Row>
             <ListGroup variant='flush'>
               <ListGroup.Item>
-                <h3>{accomodation.name}</h3>
-              </ListGroup.Item>
-              <ListGroup.Item>
-                <Rating
-                  value={accomodation.rating}
-                  text={`${accomodation.numReviews} reviews`}
-                />
-              </ListGroup.Item>
-              <ListGroup.Item>Price: ${accomodation.price}</ListGroup.Item>
-              <ListGroup.Item>
-                Description: {accomodation.description}
+                <strong className='fs-4'>{accomodation.name}</strong>
+                <br />
+                <span className='mb-3'>
+                  <i className='fas fa-map-marker-alt'></i>{' '}
+                  {accomodation.location.city}, {accomodation.location.country}
+                </span>
               </ListGroup.Item>
             </ListGroup>
-          </Col>
-          <Col md={3}>
-            <Card>
+          </Row>
+          <Row>
+            <Col md={6}>
+              <Image src={accomodation.image} alt={accomodation.name} fluid />
+            </Col>
+            <Col md={6}>
               <ListGroup variant='flush'>
                 <ListGroup.Item>
                   <Row>
-                    <Col>Price:</Col>
-                    <Col>
-                      <strong>${accomodation.price}</strong>
+                    <Col
+                      style={{
+                        margin: '0',
+                        position: 'absolute',
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                      }}
+                    >
+                      <strong className='fs-5'>
+                        ${accomodation.price} / night
+                      </strong>
+                    </Col>
+                    <Col className='m-auto text-end'>
+                      <Rating
+                        value={accomodation.rating}
+                        text={`${accomodation.numReviews} reviews`}
+                      />
                     </Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Row>
-                    <Col>Status:</Col>
                     <Col>
-                      {accomodation.countInStock > 0
-                        ? 'In Stock'
-                        : 'Out Of Stock'}
+                      <Row className='px-3 pb-1'>From</Row>
+                      <Row>
+                        <DatePicker
+                          selected={fromDate}
+                          onChange={(date) => setFromDate(date)}
+                          selectsStart
+                          startDate={fromDate}
+                          endDate={toDate}
+                          minDate={Date.now()}
+                        />
+                      </Row>
+                    </Col>
+                    <Col>
+                      <Row className='px-3 pb-1'>To</Row>
+                      <Row>
+                        <DatePicker
+                          selected={toDate}
+                          onChange={(date) => setToDate(date)}
+                          selectsEnd
+                          startDate={fromDate}
+                          endDate={toDate}
+                          minDate={fromDate}
+                        />
+                      </Row>
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Capacity:</Col>
+                    <Col>
+                      {accomodation.capacity === 1
+                        ? `${accomodation.capacity} guest`
+                        : `${accomodation.capacity} guests`}
                     </Col>
                   </Row>
                 </ListGroup.Item>
@@ -75,14 +114,14 @@ const AccomodationScreen = ({ match }) => {
                       variant='primary'
                       disabled={accomodation.countInStock === 0}
                     >
-                      Add To Cart
+                      Reserve
                     </Button>
                   </div>
                 </ListGroup.Item>
               </ListGroup>
-            </Card>
-          </Col>
-        </Row>
+            </Col>
+          </Row>
+        </>
       )}
     </>
   );

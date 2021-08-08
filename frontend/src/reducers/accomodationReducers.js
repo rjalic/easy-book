@@ -24,7 +24,7 @@ export const accomodationListReducer = (
 };
 
 export const accomodationDetailsReducer = (
-  state = { accomodation: { reviews: [] } },
+  state = { accomodation: { location: {}, reviews: [] } },
   action
 ) => {
   switch (action.type) {

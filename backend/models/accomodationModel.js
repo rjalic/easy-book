@@ -65,6 +65,10 @@ const accomodationSchema = mongoose.Schema(
       required: true,
       default: 0,
     },
+    capacity: {
+      type: Number,
+      required: true,
+    },
     amenities: [
       {
         type: mongoose.Schema.Types.ObjectId,

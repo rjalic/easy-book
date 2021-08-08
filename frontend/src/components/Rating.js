@@ -1,7 +1,7 @@
 import React from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
-const Rating = ({ value, text, color }) => {
+const Rating = ({ value, text, color, inline }) => {
   return (
     <div className='rating'>
       <span>
@@ -64,7 +64,7 @@ const Rating = ({ value, text, color }) => {
           }
         />
       </span>
-      <br />
+      {inline ? ' ' : <br />}
       <span>{text && text}</span>
     </div>
   );
@@ -72,6 +72,7 @@ const Rating = ({ value, text, color }) => {
 
 Rating.defaultProps = {
   color: '#343a40',
+  inline: false,
 };
 
 // Rating.propTypes = {

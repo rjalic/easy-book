@@ -10,6 +10,7 @@ const accomodations = [
     price: 89.99,
     rating: 4.5,
     numReviews: 12,
+    capacity: 4,
   },
   {
     name: 'Hotel Bellevue',
@@ -22,6 +23,7 @@ const accomodations = [
     price: 599.99,
     rating: 4.0,
     numReviews: 8,
+    capacity: 8,
   },
   {
     name: 'Biser Jadrana',
@@ -34,6 +36,7 @@ const accomodations = [
     price: 929.99,
     rating: 3,
     numReviews: 12,
+    capacity: 2,
   },
   {
     name: 'Judita Palace',
@@ -46,9 +49,10 @@ const accomodations = [
     price: 399.99,
     rating: 5,
     numReviews: 12,
+    capacity: 3,
   },
   {
-    name: 'Maria Luxury Rooms',
+    name: "Maria's Cozy Studio",
     image: '/images/maria.jpg',
     description: 'Kod marije',
     location: {
@@ -58,6 +62,7 @@ const accomodations = [
     price: 49.99,
     rating: 3.5,
     numReviews: 10,
+    capacity: 1,
   },
   {
     name: 'Hotel Oasis',
@@ -70,6 +75,7 @@ const accomodations = [
     price: 29.99,
     rating: 4,
     numReviews: 12,
+    capacity: 5,
   },
 ];
 

@@ -9,14 +9,14 @@ const Accomodation = ({ accomodation }) => {
     <Row>
       <li className='list-group-item d-flex p-3'>
         <Col sm={4}>
-          <Link to={`/accomodations/${accomodation._id}`}>
+          <Link to={`/accomodations/${accomodation._id}`} target='_blank'>
             <Image src={accomodation.image} fluid />
           </Link>
         </Col>
         <Col sm={8} className='px-3'>
           <Row>
             <Col>
-              <Link to={`/accomodations/${accomodation._id}`}>
+              <Link to={`/accomodations/${accomodation._id}`} target='_blank'>
                 <strong className='fs-4'>{accomodation.name}</strong>
               </Link>
             </Col>
