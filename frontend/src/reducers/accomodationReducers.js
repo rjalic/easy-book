@@ -5,6 +5,18 @@ import {
   ACCOMODATION_DETAILS_REQUEST,
   ACCOMODATION_DETAILS_SUCCESS,
   ACCOMODATION_DETAILS_FAIL,
+  ACCOMODATION_DELETE_REQUEST,
+  ACCOMODATION_DELETE_SUCCESS,
+  ACCOMODATION_DELETE_FAIL,
+  ACCOMODATION_CREATE_REQUEST,
+  ACCOMODATION_CREATE_SUCCESS,
+  ACCOMODATION_CREATE_FAIL,
+  ACCOMODATION_CREATE_RESET,
+  ACCOMODATION_UPDATE_REQUEST,
+  ACCOMODATION_UPDATE_SUCCESS,
+  ACCOMODATION_UPDATE_FAIL,
+  ACCOMODATION_UPDATE_RESET,
+  ACCOMODATION_DETAILS_RESET,
 } from '../constants/accomodationConstants';
 
 export const accomodationListReducer = (
@@ -34,6 +46,60 @@ export const accomodationDetailsReducer = (
       return { loading: false, accomodation: action.payload };
     case ACCOMODATION_DETAILS_FAIL:
       return { loading: false, error: action.payload };
+    case ACCOMODATION_DETAILS_RESET:
+      return { accomodation: {} };
+    default:
+      return state;
+  }
+};
+
+export const accomodationDeleteReducer = (
+  state = { accomodation: { location: {}, reviews: [] } },
+  action
+) => {
+  switch (action.type) {
+    case ACCOMODATION_DELETE_REQUEST:
+      return { loading: true };
+    case ACCOMODATION_DELETE_SUCCESS:
+      return { loading: false, success: true };
+    case ACCOMODATION_DELETE_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const accomodationCreateReducer = (
+  state = { accomodation: { location: {}, reviews: [] } },
+  action
+) => {
+  switch (action.type) {
+    case ACCOMODATION_CREATE_REQUEST:
+      return { loading: true };
+    case ACCOMODATION_CREATE_SUCCESS:
+      return { loading: false, success: true, accomodation: action.payload };
+    case ACCOMODATION_CREATE_FAIL:
+      return { loading: false, error: action.payload };
+    case ACCOMODATION_CREATE_RESET:
+      return {};
+    default:
+      return state;
+  }
+};
+
+export const accomodationUpdateReducer = (
+  state = { accomodation: { location: {}, reviews: [] } },
+  action
+) => {
+  switch (action.type) {
+    case ACCOMODATION_UPDATE_REQUEST:
+      return { loading: true };
+    case ACCOMODATION_UPDATE_SUCCESS:
+      return { loading: false, success: true, accomodation: action.payload };
+    case ACCOMODATION_UPDATE_FAIL:
+      return { loading: false, error: action.payload };
+    case ACCOMODATION_UPDATE_RESET:
+      return { accomodation: {} };
     default:
       return state;
   }

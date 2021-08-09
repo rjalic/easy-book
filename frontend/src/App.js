@@ -12,6 +12,8 @@ import BookingScreen from './screens/BookingScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
+import AccomodationListScreen from './screens/AccomodationListScreen';
+import AccomodationEditScreen from './screens/AccomodationEditScreen';
 
 const App = () => {
   return (
@@ -31,6 +33,14 @@ const App = () => {
           <Route path='/bookings/:id' component={PaymentScreen} />
           <Route path='/admin/userList' component={UserListScreen} />
           <Route path='/admin/user/:id/edit' component={UserEditScreen} />
+          <Route
+            path='/admin/accomodation/:id/edit'
+            component={AccomodationEditScreen}
+          />
+          <Route
+            path='/admin/accomodationList'
+            component={AccomodationListScreen}
+          />
           <Route path='/' component={HomeScreen} exact />
         </Container>
       </main>

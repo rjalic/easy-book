@@ -4,6 +4,9 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import {
   accomodationListReducer,
   accomodationDetailsReducer,
+  accomodationDeleteReducer,
+  accomodationCreateReducer,
+  accomodationUpdateReducer,
 } from './reducers/accomodationReducers.js';
 import {
   userLoginReducer,
@@ -25,6 +28,9 @@ import {
 const reducer = combineReducers({
   accomodationList: accomodationListReducer,
   accomodationDetails: accomodationDetailsReducer,
+  accomodationDelete: accomodationDeleteReducer,
+  accomodationCreate: accomodationCreateReducer,
+  accomodationUpdate: accomodationUpdateReducer,
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,
   userDetails: userDetailsReducer,
