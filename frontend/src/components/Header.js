@@ -6,12 +6,12 @@ import { logout } from '../actions/userActions';
 
 const Header = ({ history }) => {
   const dispatch = useDispatch();
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
   const logoutHandler = () => {
     dispatch(logout());
-    history.push('/');
   };
 
   return (
@@ -24,11 +24,24 @@ const Header = ({ history }) => {
           <Navbar.Toggle aria-controls='basic-navbar-nav' />
           <Navbar.Collapse id='basic-navbar-nav'>
             <Nav className='ms-auto'>
-              <LinkContainer to='/accomodations'>
+              <LinkContainer to='/'>
                 <Nav.Link>
-                  <i className='fas fa-bed'></i> Accomodations
+                  <i className='fas fa-home'></i> Home
                 </Nav.Link>
               </LinkContainer>
+              {userInfo && userInfo.isAdmin && (
+                <NavDropdown title='Admin' id='adminmenu'>
+                  <LinkContainer to='/admin/userList'>
+                    <NavDropdown.Item>Users</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to='/admin/accomodationList'>
+                    <NavDropdown.Item>Accomodations</NavDropdown.Item>
+                  </LinkContainer>
+                  <LinkContainer to='/admin/bookingList'>
+                    <NavDropdown.Item>Bookings</NavDropdown.Item>
+                  </LinkContainer>
+                </NavDropdown>
+              )}
               {userInfo ? (
                 <NavDropdown title={userInfo.name} id='username'>
                   <LinkContainer to='/profile'>

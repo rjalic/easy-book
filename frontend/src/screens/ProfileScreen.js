@@ -143,7 +143,7 @@ const ProfileScreen = ({ location, history }) => {
                       to={`/bookings/${booking._id}`}
                       className='btn btn-primary btn-sm'
                     >
-                      Details <i className='fas fa-angle-right'></i>
+                      <i className='fas fa-angle-right'></i>
                     </Link>
                   </td>
                 </tr>

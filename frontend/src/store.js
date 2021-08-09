@@ -10,6 +10,9 @@ import {
   userRegisterReducer,
   userDetailsReducer,
   userUpdateProfileReducer,
+  userListReducer,
+  userDeleteReducer,
+  userUpdateReducer,
 } from './reducers/userReducers';
 import {
   bookingPaymentMethodReducer,
@@ -26,6 +29,9 @@ const reducer = combineReducers({
   userRegister: userRegisterReducer,
   userDetails: userDetailsReducer,
   userUpdateProfile: userUpdateProfileReducer,
+  userList: userListReducer,
+  userDelete: userDeleteReducer,
+  userUpdate: userUpdateReducer,
   bookingPaymentMethod: bookingPaymentMethodReducer,
   bookingCreate: bookingCreateReducer,
   bookingDetails: bookingDetailsReducer,
