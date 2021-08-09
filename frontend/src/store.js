@@ -11,6 +11,13 @@ import {
   userDetailsReducer,
   userUpdateProfileReducer,
 } from './reducers/userReducers';
+import {
+  bookingPaymentMethodReducer,
+  bookingCreateReducer,
+  bookingDetailsReducer,
+  bookingPayReducer,
+  bookingMyListReducer,
+} from './reducers/bookingReducers';
 
 const reducer = combineReducers({
   accomodationList: accomodationListReducer,
@@ -19,14 +26,24 @@ const reducer = combineReducers({
   userRegister: userRegisterReducer,
   userDetails: userDetailsReducer,
   userUpdateProfile: userUpdateProfileReducer,
+  bookingPaymentMethod: bookingPaymentMethodReducer,
+  bookingCreate: bookingCreateReducer,
+  bookingDetails: bookingDetailsReducer,
+  bookingPay: bookingPayReducer,
+  bookingMyList: bookingMyListReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
   ? JSON.parse(localStorage.getItem('userInfo'))
   : null;
 
+const paymentMethodFromStorage = localStorage.getItem('paymentMethod')
+  ? JSON.parse(localStorage.getItem('paymentMethod'))
+  : null;
+
 const initialState = {
   userLogin: { userInfo: userInfoFromStorage },
+  bookingPaymentMethod: { paymentMethod: paymentMethodFromStorage },
 };
 
 const middleware = [thunk];

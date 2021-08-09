@@ -6,10 +6,12 @@ import Message from '../components/Message';
 import Loader from '../components/Loader';
 import DatePicker from 'react-datepicker';
 import { listAccomodationDetails } from '../actions/accomodationActions';
+import { DateHelper } from '../utils/dateUtils';
+import { LinkContainer } from 'react-router-bootstrap';
 
 const AccomodationScreen = ({ match }) => {
-  const [fromDate, setFromDate] = useState(Date.now());
-  const [toDate, setToDate] = useState(Date.now() + 24 * 60 * 60 * 1000);
+  const [fromDate, setFromDate] = useState(new Date(DateHelper.today()));
+  const [toDate, setToDate] = useState(new Date(DateHelper.tomorrow()));
 
   const dispatch = useDispatch();
 
@@ -18,7 +20,7 @@ const AccomodationScreen = ({ match }) => {
 
   useEffect(() => {
     dispatch(listAccomodationDetails(match.params.id));
-  }, [dispatch, match]);
+  }, [dispatch, match, fromDate, toDate]);
 
   return (
     <>
@@ -29,7 +31,7 @@ const AccomodationScreen = ({ match }) => {
       ) : (
         <>
           <Row>
-            <ListGroup variant='flush'>
+            <ListGroup variant='flush' className='pt-0'>
               <ListGroup.Item>
                 <strong className='fs-4'>{accomodation.name}</strong>
                 <br />
@@ -75,7 +77,11 @@ const AccomodationScreen = ({ match }) => {
                       <Row>
                         <DatePicker
                           selected={fromDate}
-                          onChange={(date) => setFromDate(date)}
+                          onChange={(date) =>
+                            setFromDate(
+                              new Date(DateHelper.normalizeDate(date))
+                            )
+                          }
                           selectsStart
                           startDate={fromDate}
                           endDate={toDate}
@@ -88,7 +94,9 @@ const AccomodationScreen = ({ match }) => {
                       <Row>
                         <DatePicker
                           selected={toDate}
-                          onChange={(date) => setToDate(date)}
+                          onChange={(date) =>
+                            setToDate(new Date(DateHelper.normalizeDate(date)))
+                          }
                           selectsEnd
                           startDate={fromDate}
                           endDate={toDate}
@@ -109,14 +117,17 @@ const AccomodationScreen = ({ match }) => {
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  <div className='d-grid gap-2'>
-                    <Button
-                      variant='primary'
-                      disabled={accomodation.countInStock === 0}
-                    >
-                      Reserve
-                    </Button>
-                  </div>
+                  <LinkContainer
+                    to={`/accomodations/${
+                      accomodation._id
+                    }/book?from=${DateHelper.toIsoDate(
+                      fromDate
+                    )}&to=${DateHelper.toIsoDate(toDate)}`}
+                  >
+                    <div className='d-grid gap-2'>
+                      <Button variant='primary'>Reserve</Button>
+                    </div>
+                  </LinkContainer>
                 </ListGroup.Item>
               </ListGroup>
             </Col>

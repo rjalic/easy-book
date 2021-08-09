@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Row, Col } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
+import { Form, Button, Row, Col, Table } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { getUserDetails, updateUserProfile } from '../actions/userActions';
+import { listMyBookings } from '../actions/bookingActions';
 
 const ProfileScreen = ({ location, history }) => {
   const [name, setName] = useState('');
@@ -23,12 +25,20 @@ const ProfileScreen = ({ location, history }) => {
   const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
   const { success } = userUpdateProfile;
 
+  const bookingMyList = useSelector((state) => state.bookingMyList);
+  const {
+    loading: loadingBookings,
+    error: errorBookings,
+    bookings,
+  } = bookingMyList;
+
   useEffect(() => {
     if (userInfo) {
       history.push('/login');
     } else {
       if (!user.name) {
         dispatch(getUserDetails('profile'));
+        dispatch(listMyBookings());
       } else {
         setName(user.name);
         setEmail(user.email);
@@ -93,13 +103,54 @@ const ProfileScreen = ({ location, history }) => {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
           </Form.Group>
-          <Button type='submit' variant='primary'>
+          <Button type='submit' variant='primary' className='my-2'>
             Update
           </Button>
         </Form>
       </Col>
       <Col md={9}>
         <h2>My Bookings</h2>
+        {loadingBookings ? (
+          <Loader />
+        ) : errorBookings ? (
+          <Message variant='danger'>{errorBookings}</Message>
+        ) : (
+          <Table striped bordered hover responsive className='table-sm'>
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>Date</th>
+                <th>Total</th>
+                <th>Paid</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {bookings.map((booking) => (
+                <tr key={booking._id}>
+                  <td>{booking._id}</td>
+                  <td>{booking.createdAt.substring(0, 10)}</td>
+                  <td>${booking.totalPrice}</td>
+                  <td>
+                    {booking.isPaid ? (
+                      booking.paidAt.substring(0, 10)
+                    ) : (
+                      <i className='fas fa-times' style={{ color: 'red' }}></i>
+                    )}
+                  </td>
+                  <td>
+                    <Link
+                      to={`/bookings/${booking._id}`}
+                      className='btn btn-primary btn-sm'
+                    >
+                      Details <i className='fas fa-angle-right'></i>
+                    </Link>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        )}
       </Col>
     </Row>
   );
