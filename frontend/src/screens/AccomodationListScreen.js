@@ -4,6 +4,7 @@ import { Table, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
+import Paginate from '../components/Paginate';
 import {
   createAccomodation,
   deleteAccomodation,
@@ -12,10 +13,12 @@ import {
 import { ACCOMODATION_CREATE_RESET } from '../constants/accomodationConstants';
 
 const AccomodationListScreen = ({ history, match }) => {
+  const pageNumber = match.params.pageNumber || 1;
+
   const dispatch = useDispatch();
 
   const accomodationList = useSelector((state) => state.accomodationList);
-  const { loading, error, accomodations } = accomodationList;
+  const { loading, error, accomodations, page, pages } = accomodationList;
 
   const accomodationDelete = useSelector((state) => state.accomodationDelete);
   const {
@@ -45,7 +48,7 @@ const AccomodationListScreen = ({ history, match }) => {
     if (successCreate) {
       history.push(`/admin/accomodations/${createdAccmodation._id}/edit`);
     } else {
-      dispatch(listAccomodations());
+      dispatch(listAccomodations('', pageNumber));
     }
   }, [
     dispatch,
@@ -54,6 +57,7 @@ const AccomodationListScreen = ({ history, match }) => {
     successDelete,
     successCreate,
     createdAccmodation,
+    pageNumber,
   ]);
 
   const deleteHandler = (id) => {
@@ -87,47 +91,52 @@ const AccomodationListScreen = ({ history, match }) => {
       ) : error ? (
         <Message variant='danger'>{error}</Message>
       ) : (
-        <Table striped bordered hover responsive className='table-sm'>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>NAME</th>
-              <th>PRICE</th>
-              <th>CAPACITY</th>
-              <th>HOST</th>
-              <th>RATING</th>
-              <th>ACTIONS</th>
-            </tr>
-          </thead>
-          <tbody>
-            {accomodations.map((accomodation) => (
-              <tr key={accomodation._id}>
-                <td>{accomodation._id}</td>
-                <td>{accomodation.name}</td>
-                <td>${accomodation.price}</td>
-                <td>{accomodation.capacity}</td>
-                <td>{accomodation.host.name}</td>
-                <td>{accomodation.rating}</td>
-                <td>
-                  <LinkContainer
-                    to={`/admin/accomodation/${accomodation._id}/edit`}
-                  >
-                    <Button variant='light' className='btn-sm'>
-                      <i className='fas fa-edit'></i>
-                    </Button>
-                  </LinkContainer>
-                  <Button
-                    variant='danger'
-                    className='btn-sm'
-                    onClick={() => deleteHandler(accomodation._id)}
-                  >
-                    <i className='fas fa-trash'></i>
-                  </Button>
-                </td>
+        <>
+          <Table striped bordered hover responsive className='table-sm'>
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>NAME</th>
+                <th>PRICE</th>
+                <th>CAPACITY</th>
+                <th>HOST</th>
+                <th>RATING</th>
+                <th>ACTIONS</th>
               </tr>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {accomodations.map((accomodation) => (
+                <tr key={accomodation._id}>
+                  <td>{accomodation._id}</td>
+                  <td>{accomodation.name}</td>
+                  <td>${accomodation.price}</td>
+                  <td>{accomodation.capacity}</td>
+                  <td>{accomodation.host.name}</td>
+                  <td>{accomodation.rating}</td>
+                  <td>
+                    <LinkContainer
+                      to={`/admin/accomodation/${accomodation._id}/edit`}
+                    >
+                      <Button variant='light' className='btn-sm'>
+                        <i className='fas fa-edit'></i>
+                      </Button>
+                    </LinkContainer>
+                    <Button
+                      variant='danger'
+                      className='btn-sm'
+                      onClick={() => deleteHandler(accomodation._id)}
+                    >
+                      <i className='fas fa-trash'></i>
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+          <div className='d-flex justify-content-center'>
+            <Paginate pages={pages} page={page} isAdmin={true} />
+          </div>
+        </>
       )}
     </>
   );

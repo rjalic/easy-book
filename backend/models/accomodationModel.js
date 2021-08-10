@@ -2,9 +2,10 @@ import mongoose from 'mongoose';
 
 const reviewSchema = mongoose.Schema(
   {
-    name: {
-      type: String,
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
+      ref: 'User',
     },
     rating: {
       type: Number,
@@ -80,19 +81,6 @@ const accomodationSchema = mongoose.Schema(
     timestamps: true,
   }
 );
-
-// accomodationSchema.pre('save', function (next) {
-//   const date = new Date.now();
-//   date.setFullYear(date.getFullYear() + 1);
-//   return date;
-//   next();
-// });
-
-// const availableToDate = () => {
-//   const date = new Date.now();
-//   date.setFullYear(date.getFullYear() + 1);
-//   return date;
-// };
 
 const Accomodation = mongoose.model('Accomodation', accomodationSchema);
 

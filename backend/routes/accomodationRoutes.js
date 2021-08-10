@@ -5,6 +5,7 @@ import {
   deleteAccomodation,
   createAccomodation,
   updateAccomodation,
+  createAccomodationReview,
 } from '../controllers/accomodationController.js';
 import { protect, isAdmin } from '../middleware/authMiddleware.js';
 
@@ -14,6 +15,8 @@ router
   .route('/')
   .get(getAccomodations)
   .post(protect, isAdmin, createAccomodation);
+
+router.route('/:id/reviews').post(protect, createAccomodationReview);
 
 router
   .route('/:id')

@@ -17,6 +17,10 @@ import {
   ACCOMODATION_UPDATE_FAIL,
   ACCOMODATION_UPDATE_RESET,
   ACCOMODATION_DETAILS_RESET,
+  ACCOMODATION_CREATE_REVIEW_REQUEST,
+  ACCOMODATION_CREATE_REVIEW_SUCCESS,
+  ACCOMODATION_CREATE_REVIEW_FAIL,
+  ACCOMODATION_CREATE_REVIEW_RESET,
 } from '../constants/accomodationConstants';
 
 export const accomodationListReducer = (
@@ -27,7 +31,12 @@ export const accomodationListReducer = (
     case ACCOMODATION_LIST_REQUEST:
       return { loading: true, accomodations: [] };
     case ACCOMODATION_LIST_SUCCESS:
-      return { loading: false, accomodations: action.payload };
+      return {
+        loading: false,
+        accomodations: action.payload.accomodations,
+        pages: action.payload.pages,
+        page: action.payload.page,
+      };
     case ACCOMODATION_LIST_FAIL:
       return { loading: false, error: action.payload };
     default:
@@ -100,6 +109,21 @@ export const accomodationUpdateReducer = (
       return { loading: false, error: action.payload };
     case ACCOMODATION_UPDATE_RESET:
       return { accomodation: {} };
+    default:
+      return state;
+  }
+};
+
+export const accomodationCreateReviewReducer = (state = {}, action) => {
+  switch (action.type) {
+    case ACCOMODATION_CREATE_REVIEW_REQUEST:
+      return { loading: true };
+    case ACCOMODATION_CREATE_REVIEW_SUCCESS:
+      return { loading: false, success: true };
+    case ACCOMODATION_CREATE_REVIEW_FAIL:
+      return { loading: false, error: action.payload };
+    case ACCOMODATION_CREATE_REVIEW_RESET:
+      return {};
     default:
       return state;
   }

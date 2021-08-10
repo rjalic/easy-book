@@ -16,28 +16,36 @@ import {
   ACCOMODATION_UPDATE_REQUEST,
   ACCOMODATION_UPDATE_SUCCESS,
   ACCOMODATION_UPDATE_FAIL,
+  ACCOMODATION_CREATE_REVIEW_REQUEST,
+  ACCOMODATION_CREATE_REVIEW_SUCCESS,
+  ACCOMODATION_CREATE_REVIEW_FAIL,
 } from '../constants/accomodationConstants';
 
-export const listAccomodations = () => async (dispatch) => {
-  try {
-    dispatch({ type: ACCOMODATION_LIST_REQUEST });
+export const listAccomodations =
+  (keyword = '', pageNumber = '') =>
+  async (dispatch) => {
+    // query
+    try {
+      dispatch({ type: ACCOMODATION_LIST_REQUEST });
 
-    const { data } = await axios.get('/api/accomodations');
+      const { data } = await axios.get(
+        `/api/accomodations?keyword=${keyword}&pageNumber=${pageNumber}`
+      );
 
-    dispatch({
-      type: ACCOMODATION_LIST_SUCCESS,
-      payload: data,
-    });
-  } catch (error) {
-    dispatch({
-      type: ACCOMODATION_LIST_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    });
-  }
-};
+      dispatch({
+        type: ACCOMODATION_LIST_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: ACCOMODATION_LIST_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
 
 export const listAccomodationDetails = (id) => async (dispatch) => {
   try {
@@ -148,6 +156,42 @@ export const updateAccomodation =
     } catch (error) {
       dispatch({
         type: ACCOMODATION_UPDATE_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
+
+export const createAccomodationReview =
+  (accomodationId, review) => async (dispatch, getState) => {
+    try {
+      dispatch({
+        type: ACCOMODATION_CREATE_REVIEW_REQUEST,
+      });
+
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      await axios.post(
+        `/api/accomodations/${accomodationId}/reviews`,
+        review,
+        config
+      );
+
+      dispatch({ type: ACCOMODATION_CREATE_REVIEW_SUCCESS });
+    } catch (error) {
+      dispatch({
+        type: ACCOMODATION_CREATE_REVIEW_FAIL,
         payload:
           error.response && error.response.data.message
             ? error.response.data.message
