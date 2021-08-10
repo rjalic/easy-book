@@ -117,17 +117,25 @@ const AccomodationScreen = ({ match }) => {
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  <LinkContainer
-                    to={`/accomodations/${
-                      accomodation._id
-                    }/book?from=${DateHelper.toIsoDate(
-                      fromDate
-                    )}&to=${DateHelper.toIsoDate(toDate)}`}
-                  >
+                  {toDate < fromDate ? (
                     <div className='d-grid gap-2'>
-                      <Button variant='primary'>Reserve</Button>
+                      <Button variant='primary' disabled>
+                        Reserve
+                      </Button>
                     </div>
-                  </LinkContainer>
+                  ) : (
+                    <LinkContainer
+                      to={`/accomodations/${
+                        accomodation._id
+                      }/book?from=${DateHelper.toIsoDate(
+                        fromDate
+                      )}&to=${DateHelper.toIsoDate(toDate)}`}
+                    >
+                      <div className='d-grid gap-2'>
+                        <Button variant='primary'>Reserve</Button>
+                      </div>
+                    </LinkContainer>
+                  )}
                 </ListGroup.Item>
               </ListGroup>
             </Col>

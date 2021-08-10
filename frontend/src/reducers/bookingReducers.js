@@ -14,6 +14,9 @@ import {
   BOOKING_MY_LIST_SUCCESS,
   BOOKING_MY_LIST_FAIL,
   BOOKING_MY_LIST_RESET,
+  BOOKING_LIST_REQUEST,
+  BOOKING_LIST_SUCCESS,
+  BOOKING_LIST_FAIL,
 } from '../constants/bookingConstants';
 
 export const bookingPaymentMethodReducer = (state = {}, action) => {
@@ -79,6 +82,19 @@ export const bookingMyListReducer = (state = { bookings: [] }, action) => {
       return { loading: false, error: action.payload };
     case BOOKING_MY_LIST_RESET:
       return { bookings: [] };
+    default:
+      return state;
+  }
+};
+
+export const bookingListReducer = (state = { bookings: [] }, action) => {
+  switch (action.type) {
+    case BOOKING_LIST_REQUEST:
+      return { loading: true };
+    case BOOKING_LIST_SUCCESS:
+      return { loading: false, bookings: action.payload };
+    case BOOKING_LIST_FAIL:
+      return { loading: false, error: action.payload };
     default:
       return state;
   }

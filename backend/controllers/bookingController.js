@@ -82,4 +82,21 @@ const getMyBookings = asyncHandler(async (req, res) => {
   res.json(bookings);
 });
 
-export { createBooking, getBookingById, updateBookingToPaid, getMyBookings };
+// @desc    Get current user's bookings
+// @route   GET /api/bookings
+// @access  Private/admin
+const getBookings = asyncHandler(async (req, res) => {
+  const bookings = await Booking.find({})
+    .populate('user', 'id name')
+    .populate('accomodation', 'id name');
+
+  res.json(bookings);
+});
+
+export {
+  createBooking,
+  getBookingById,
+  updateBookingToPaid,
+  getMyBookings,
+  getBookings,
+};

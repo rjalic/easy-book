@@ -13,7 +13,6 @@ const BookingScreen = ({ history, match, location }) => {
   const [bookedFrom, setBookedFrom] = useState(new Date());
   const [bookedTo, setBookedTo] = useState(new Date());
   const [totalPrice, setTotalPrice] = useState(0);
-  const [init, setInit] = useState(false);
 
   const dispatch = useDispatch();
 
@@ -43,19 +42,22 @@ const BookingScreen = ({ history, match, location }) => {
   useEffect(() => {
     if (bookingSuccess) {
       history.push(`/bookings/${booking._id}`);
-    }
+    } else if (totalPrice === 0) {
+      let query = location.search.slice(1).split('&');
 
-    if (!init) {
+      setBookedFrom(
+        new Date(DateHelper.normalizeDate(new Date(query[0].split('=')[1])))
+      );
+      setBookedTo(
+        new Date(DateHelper.normalizeDate(new Date(query[1].split('=')[1])))
+      );
+
       setTotalPrice(
         accomodation.price * DateHelper.daysBetween(bookedFrom, bookedTo)
       );
-
-      let query = location.search.slice(1).split('&');
-      setBookedFrom(new Date(query[0].split('=')[1]));
-      setBookedTo(new Date(query[1].split('=')[1]));
-
-      setInit(true);
     }
+    console.log(bookedFrom);
+    console.log(bookedTo);
   }, [
     accomodation,
     bookedFrom,
@@ -65,7 +67,6 @@ const BookingScreen = ({ history, match, location }) => {
     history,
     bookingSuccess,
     location.search,
-    init,
   ]);
 
   return (

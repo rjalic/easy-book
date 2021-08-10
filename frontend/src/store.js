@@ -23,6 +23,7 @@ import {
   bookingDetailsReducer,
   bookingPayReducer,
   bookingMyListReducer,
+  bookingListReducer,
 } from './reducers/bookingReducers';
 
 const reducer = combineReducers({
@@ -43,6 +44,7 @@ const reducer = combineReducers({
   bookingDetails: bookingDetailsReducer,
   bookingPay: bookingPayReducer,
   bookingMyList: bookingMyListReducer,
+  bookingList: bookingListReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
