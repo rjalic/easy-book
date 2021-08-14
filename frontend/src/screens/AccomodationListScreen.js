@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { Table, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import Paginate from '../components/Paginate';
@@ -13,8 +14,6 @@ import {
 import { ACCOMODATION_CREATE_RESET } from '../constants/accomodationConstants';
 
 const AccomodationListScreen = ({ history, match }) => {
-  const pageNumber = match.params.pageNumber || 1;
-
   const dispatch = useDispatch();
 
   const accomodationList = useSelector((state) => state.accomodationList);
@@ -38,6 +37,13 @@ const AccomodationListScreen = ({ history, match }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  function useQuery() {
+    return new URLSearchParams(useLocation().search);
+  }
+
+  const query = useQuery();
+  const pageNumber = query.get('page') ? query.get('page') : 1;
+
   useEffect(() => {
     dispatch({ type: ACCOMODATION_CREATE_RESET });
 
@@ -46,7 +52,7 @@ const AccomodationListScreen = ({ history, match }) => {
     }
 
     if (successCreate) {
-      history.push(`/admin/accomodations/${createdAccmodation._id}/edit`);
+      history.push(`/admin/accomodation/${createdAccmodation._id}/edit`);
     } else {
       dispatch(listAccomodations('', pageNumber));
     }

@@ -9,7 +9,14 @@ const Accomodation = ({ accomodation }) => {
       <Row>
         <Col sm={4}>
           <Link to={`/accomodations/${accomodation._id}`} target='_blank'>
-            <Image src={accomodation.image} fluid />
+            <Image
+              src={accomodation.image}
+              fluid
+              onError={(e) => {
+                e.target.onError = null;
+                e.target.src = '/images/placeholder.png';
+              }}
+            />
           </Link>
         </Col>
         <Col sm={8} className='px-3'>

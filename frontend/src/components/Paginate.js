@@ -12,9 +12,9 @@ const Paginate = ({ pages, page, isAdmin = false, keyword = '' }) => {
             to={
               !isAdmin
                 ? keyword
-                  ? `/search/${keyword}/page/${x + 1}`
-                  : `/page/${x + 1}`
-                : `/admin/accomodationList/page/${x + 1}`
+                  ? `/home?keyword=${keyword}&page=${x + 1}`
+                  : `/home?page=${x + 1}`
+                : `/admin/accomodationList?page=${x + 1}`
             }
           >
             <Pagination.Item active={x + 1 === page}>{x + 1}</Pagination.Item>

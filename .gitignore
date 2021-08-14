@@ -127,6 +127,6 @@ yarn-debug.log*
 yarn-error.log*
 
 # image uploads
-*.jpg
-*.jpeg
-*.png
+/uploads/*.jpg
+/uploads/*.jpeg
+/uploads/*.png
