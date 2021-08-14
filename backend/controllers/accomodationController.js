@@ -19,7 +19,6 @@ const getAccomodations = asyncHandler(async (req, res) => {
     : {};
 
   const count = await Accomodation.countDocuments({ ...keyword });
-  console.log(count);
 
   const accomodations = await Accomodation.find({ ...keyword })
     .populate('host', 'name')

@@ -7,7 +7,7 @@ const SearchBar = ({ history }) => {
   const submitHandler = (e) => {
     e.preventDefault();
     if (keyword.trim()) {
-      history.push(`/search/${keyword}`);
+      history.push(`/home?keyword=${keyword}`);
     } else {
       history.push('/');
     }
@@ -15,6 +15,7 @@ const SearchBar = ({ history }) => {
 
   return (
     <Form onSubmit={submitHandler} inline>
+      <Form.Label>Search by name</Form.Label>
       <Form.Control
         type='text'
         name='q'
@@ -22,9 +23,11 @@ const SearchBar = ({ history }) => {
         placeholder='Search accomodations...'
         className='mr-sm-2 ml-sm-5'
       ></Form.Control>
-      <Button type='submit' variant='primary' className='p-2'>
-        Search
-      </Button>
+      <div className='d-grid gap-2 mt-2'>
+        <Button type='submit' variant='primary' className='p-2'>
+          Filter
+        </Button>
+      </div>
     </Form>
   );
 };

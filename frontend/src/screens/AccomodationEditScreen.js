@@ -139,6 +139,7 @@ const AccomodationEditScreen = ({ match, history }) => {
                 label='Choose File'
                 custom
                 onChange={uploadFileHandler}
+                className='image-file-upload'
               />
               {uploading && <Loader />}
             </Form.Group>

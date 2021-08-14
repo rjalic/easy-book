@@ -77,7 +77,15 @@ const AccomodationScreen = ({ match }) => {
           </Row>
           <Row>
             <Col md={6}>
-              <Image src={accomodation.image} alt={accomodation.name} fluid />
+              <Image
+                src={accomodation.image}
+                alt={accomodation.name}
+                fluid
+                onError={(e) => {
+                  e.target.onError = null;
+                  e.target.src = '/images/placeholder.png';
+                }}
+              />
             </Col>
             <Col md={6}>
               <ListGroup variant='flush'>

@@ -22,7 +22,7 @@ import {
 } from '../constants/accomodationConstants';
 
 export const listAccomodations =
-  (keyword = '', pageNumber = '') =>
+  (keyword = '', pageNumber = '1') =>
   async (dispatch) => {
     // query
     try {
