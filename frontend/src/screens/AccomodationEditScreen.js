@@ -14,6 +14,7 @@ import {
   ACCOMODATION_UPDATE_RESET,
   ACCOMODATION_DETAILS_RESET,
 } from '../constants/accomodationConstants';
+import { listAmenities } from '../actions/amenityActions';
 
 const AccomodationEditScreen = ({ match, history }) => {
   const accomodationId = match.params.id;
@@ -33,6 +34,13 @@ const AccomodationEditScreen = ({ match, history }) => {
   const accomodationDetails = useSelector((state) => state.accomodationDetails);
   const { loading, error, accomodation } = accomodationDetails;
 
+  const amenityList = useSelector((state) => state.amenityList);
+  const {
+    loading: amenityLoading,
+    error: amenityError,
+    amenities: amenitiesList,
+  } = amenityList;
+
   const accomodationUpdate = useSelector((state) => state.accomodationUpdate);
   const {
     loading: loadingUpdate,
@@ -48,6 +56,7 @@ const AccomodationEditScreen = ({ match, history }) => {
     } else {
       if (!accomodation.name || accomodation._id !== accomodationId) {
         dispatch(listAccomodationDetails(accomodationId));
+        dispatch(listAmenities());
       } else {
         setName(accomodation.name);
         setImage(accomodation.image);
@@ -59,7 +68,14 @@ const AccomodationEditScreen = ({ match, history }) => {
         setAmenities(accomodation.amenities);
       }
     }
-  }, [dispatch, accomodationId, accomodation, history, successUpdate]);
+  }, [
+    dispatch,
+    accomodationId,
+    accomodation,
+    history,
+    successUpdate,
+    amenities,
+  ]);
 
   const uploadFileHandler = async (e) => {
     const file = e.target.files[0];
@@ -108,10 +124,10 @@ const AccomodationEditScreen = ({ match, history }) => {
         Go Back
       </Link>
       <FormContainer>
-        <h1>Edit Product</h1>
+        <h1>Edit Accomodation</h1>
         {loadingUpdate && <Loader />}
         {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
-        {loading ? (
+        {loading || amenityLoading ? (
           <Loader />
         ) : error ? (
           <Message variant='danger'>{error}</Message>
@@ -187,6 +203,37 @@ const AccomodationEditScreen = ({ match, history }) => {
                 value={capacity}
                 onChange={(e) => setCapacity(e.target.value)}
               />
+            </Form.Group>
+            <Form.Group className='row'>
+              <Form.Label>Amenities</Form.Label>
+              {amenityError ? (
+                <Message variant='danger'>{amenityError}</Message>
+              ) : (
+                <>
+                  {amenitiesList.map((amenityItem) => (
+                    <Form.Check
+                      label={amenityItem.name}
+                      id={amenityItem.name}
+                      key={amenityItem._id}
+                      className='col-4'
+                      defaultChecked={
+                        accomodation.amenities &&
+                        accomodation.amenities.includes(amenityItem._id)
+                      }
+                      onChange={(e) => {
+                        let temp = amenities;
+                        if (temp.includes(amenityItem._id)) {
+                          temp = temp.splice(temp.indexOf(amenityItem._id), 1);
+                        } else {
+                          temp.push(amenityItem._id);
+                        }
+                        setAmenities(temp);
+                        console.log(amenities);
+                      }}
+                    />
+                  ))}
+                </>
+              )}
             </Form.Group>
             <Button type='submit' variant='primary' className='my-2'>
               Update

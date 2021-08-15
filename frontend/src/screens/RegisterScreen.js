@@ -83,14 +83,14 @@ const RegisterScreen = ({ location, history }) => {
           />
         </Form.Group>
         <Button type='submit' variant='primary' className='my-2'>
-          Register
+          Sign Up
         </Button>
       </Form>
       <Row className='py-3'>
         <Col>
           Already have an account?{' '}
           <Link to={redirect ? `/login?redirect=${redirect}` : '/login'}>
-            Register
+            Sign In
           </Link>
         </Col>
       </Row>

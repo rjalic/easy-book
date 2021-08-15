@@ -42,7 +42,7 @@ const AccomodationScreen = ({ match }) => {
       dispatch({ type: ACCOMODATION_CREATE_REVIEW_RESET });
     }
 
-    dispatch(listAccomodationDetails(match.params.id));
+    dispatch(listAccomodationDetails(match.params.id, true));
   }, [dispatch, match, fromDate, toDate, successAccomodationReview]);
 
   const submitHandler = (e) => {
@@ -149,11 +149,26 @@ const AccomodationScreen = ({ match }) => {
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Row>
-                    <Col>Capacity:</Col>
+                    <Col>Capacity</Col>
                     <Col>
                       {accomodation.capacity === 1
                         ? `${accomodation.capacity} guest`
                         : `${accomodation.capacity} guests`}
+                    </Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>Amenities</Col>
+                  </Row>
+                  <Row>
+                    <Col>
+                      {accomodation.amenities.map((amenity) => (
+                        <span key={amenity._id} className='m-1'>
+                          <i className={amenity.icon} key={amenity.id} />{' '}
+                          {amenity.name}
+                        </span>
+                      ))}
                     </Col>
                   </Row>
                 </ListGroup.Item>

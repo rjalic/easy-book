@@ -32,12 +32,22 @@ const getAccomodations = asyncHandler(async (req, res) => {
 // @route   GET /api/accomodations/:id
 // @access  Public
 const getAccomodationById = asyncHandler(async (req, res) => {
-  const accomodation = await Accomodation.findById(req.params.id).populate(
+  const populateAmenities =
+    req.query.populateAmenities === 'true' ? true : false;
+  console.log(req.query);
+  console.log(populateAmenities);
+
+  let accomodation = await Accomodation.findById(req.params.id).populate(
     'reviews.user',
     'name'
   );
 
   if (accomodation) {
+    if (populateAmenities) {
+      accomodation = await Accomodation.findById(req.params.id)
+        .populate('reviews.user', 'name')
+        .populate('amenities');
+    }
     res.json(accomodation);
   } else {
     res.status(404);
