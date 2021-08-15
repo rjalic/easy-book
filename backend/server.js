@@ -8,6 +8,7 @@ import accomodationRoutes from './routes/accomodationRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import bookingRoutes from './routes/bookingRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
+import amenityRoutes from './routes/amenityRoutes.js';
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use('/api/accomodations', accomodationRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/bookings', bookingRoutes);
 app.use('/api/upload', uploadRoutes);
+app.use('/api/amenities', amenityRoutes);
 
 app.get('/api/config/paypal', (req, res) =>
   res.send(process.env.PAYPAL_CLIENT_ID)

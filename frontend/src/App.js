@@ -15,6 +15,7 @@ import UserEditScreen from './screens/UserEditScreen';
 import AccomodationListScreen from './screens/AccomodationListScreen';
 import AccomodationEditScreen from './screens/AccomodationEditScreen';
 import BookingListScreen from './screens/BookingListScreen';
+import AmenityListScreen from './screens/AmenityListScreen';
 
 const App = () => {
   return (
@@ -44,6 +45,7 @@ const App = () => {
             component={AccomodationListScreen}
             exact
           />
+          <Route path='/admin/amenityList' component={AmenityListScreen} />
           <Route path='/home' component={HomeScreen} />
           <Route path='/' component={HomeScreen} exact />
         </Container>

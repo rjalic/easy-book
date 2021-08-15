@@ -26,6 +26,11 @@ import {
   bookingMyListReducer,
   bookingListReducer,
 } from './reducers/bookingReducers';
+import {
+  amenityCreateReducer,
+  amenityDeleteReducer,
+  amenityListReducer,
+} from './reducers/amenityReducer.js';
 
 const reducer = combineReducers({
   accomodationList: accomodationListReducer,
@@ -47,6 +52,9 @@ const reducer = combineReducers({
   bookingPay: bookingPayReducer,
   bookingMyList: bookingMyListReducer,
   bookingList: bookingListReducer,
+  amenityList: amenityListReducer,
+  amenityCreate: amenityCreateReducer,
+  amenityDelete: amenityDeleteReducer,
 });
 
 const userInfoFromStorage = localStorage.getItem('userInfo')
