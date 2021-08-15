@@ -151,9 +151,10 @@ const createAccomodationReview = asyncHandler(async (req, res) => {
     accomodation.reviews.push(review);
 
     accomodation.numReviews = accomodation.reviews.length;
-    accomodation.rating =
+    accomodation.rating = (
       accomodation.reviews.reduce((acc, item) => item.rating + acc, 0) /
-      accomodation.reviews.length;
+      accomodation.reviews.length
+    ).toFixed(1);
 
     await accomodation.save();
     res.status(201).json({ message: 'Review added' });
