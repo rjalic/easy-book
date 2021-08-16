@@ -141,7 +141,7 @@ const AccomodationScreen = ({ match }) => {
                           selectsEnd
                           startDate={fromDate}
                           endDate={toDate}
-                          minDate={fromDate}
+                          minDate={new Date(DateHelper.addDays(fromDate, 1))}
                         />
                       </Row>
                     </Col>

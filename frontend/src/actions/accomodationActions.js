@@ -22,14 +22,16 @@ import {
 } from '../constants/accomodationConstants';
 
 export const listAccomodations =
-  (keyword = '', pageNumber = '1') =>
+  (query = '', pageNumber = '1') =>
   async (dispatch) => {
     // query
     try {
       dispatch({ type: ACCOMODATION_LIST_REQUEST });
 
       const { data } = await axios.get(
-        `/api/accomodations?keyword=${keyword}&pageNumber=${pageNumber}`
+        `/api/accomodations${query}${
+          query === '' ? '?' : '&'
+        }pageNumber=${pageNumber}`
       );
 
       dispatch({

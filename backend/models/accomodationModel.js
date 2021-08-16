@@ -62,7 +62,7 @@ const accomodationSchema = mongoose.Schema(
       default: 0,
     },
     price: {
-      type: String,
+      type: Number,
       required: true,
       default: 0,
     },

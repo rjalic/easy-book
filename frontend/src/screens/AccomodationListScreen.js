@@ -144,7 +144,11 @@ const AccomodationListScreen = ({ history, match }) => {
             </tbody>
           </Table>
           <div className='d-flex justify-content-center'>
-            <Paginate pages={pages} page={page} isAdmin={true} />
+            <Paginate
+              pages={pages}
+              page={page}
+              path={'/admin/accomodationList'}
+            />
           </div>
         </>
       )}

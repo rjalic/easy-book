@@ -16,17 +16,19 @@ const HomeScreen = ({ history }) => {
   const accomodationList = useSelector((state) => state.accomodationList);
   const { loading, error, accomodations, page, pages } = accomodationList;
 
+  let currentQuery = useLocation().search;
+
   function useQuery() {
     return new URLSearchParams(useLocation().search);
   }
 
   const query = useQuery();
-  const keyword = query.get('keyword') ? query.get('keyword') : '';
+  console.log(currentQuery);
   const pageNumber = query.get('page') ? query.get('page') : 1;
 
   useEffect(() => {
-    dispatch(listAccomodations(keyword, pageNumber));
-  }, [dispatch, keyword, pageNumber]);
+    dispatch(listAccomodations(currentQuery, pageNumber));
+  }, [dispatch, currentQuery, pageNumber]);
 
   return (
     <>
@@ -61,7 +63,8 @@ const HomeScreen = ({ history }) => {
                   <Paginate
                     pages={pages}
                     page={page}
-                    keyword={keyword ? keyword : ''}
+                    path={'/home'}
+                    query={currentQuery}
                   />
                 </div>
               </Row>

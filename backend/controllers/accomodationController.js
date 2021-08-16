@@ -7,6 +7,12 @@ import Accomodation from '../models/accomodationModel.js';
 const getAccomodations = asyncHandler(async (req, res) => {
   const pageSize = 10;
   const page = Number(req.query.pageNumber) || 1;
+  const capacity = Number(req.query.capacity) || 1;
+  const minPrice = Number(req.query.minPrice) || 0;
+  const maxPrice = Number(req.query.maxPrice) || 100000000;
+  const city = req.query.city || '';
+  const country = req.query.country || '';
+  const rating = Number(req.query.rating) || 0;
 
   console.log(req.query);
   const keyword = req.query.keyword
@@ -18,9 +24,31 @@ const getAccomodations = asyncHandler(async (req, res) => {
       }
     : {};
 
-  const count = await Accomodation.countDocuments({ ...keyword });
+  const count = await Accomodation.countDocuments({
+    name: { $regex: req.query.keyword ? req.query.keyword : '', $options: 'i' },
+    capacity: { $gte: capacity },
+    price: { $gte: minPrice, $lt: maxPrice },
+    'location.city': { $regex: city, $options: 'i' },
+    'location.country': { $regex: country, $options: 'i' },
+    rating: { $gte: rating },
+  });
+
+  console.log(count);
 
   const accomodations = await Accomodation.find({ ...keyword })
+    .where('capacity')
+    .gte(capacity)
+    .where('price')
+    .gte(minPrice)
+    .lt(maxPrice)
+    .where({
+      'location.city': { $regex: city, $options: 'i' },
+    })
+    .where({
+      'location.country': { $regex: country, $options: 'i' },
+    })
+    .where('rating')
+    .gte(rating)
     .populate('host', 'name')
     .limit(pageSize)
     .skip(pageSize * (page - 1));
