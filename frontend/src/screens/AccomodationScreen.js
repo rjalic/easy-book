@@ -114,8 +114,10 @@ const AccomodationScreen = ({ match }) => {
                 <ListGroup.Item>
                   <Row>
                     <Col>
-                      <Row className='px-3 pb-1'>From</Row>
-                      <Row>
+                      <Row className='px-3 pb-1'>
+                        <h6 className='px-0 mt-1 mb-0'>From</h6>
+                      </Row>
+                      <Row className='mb-2'>
                         <DatePicker
                           selected={fromDate}
                           onChange={(date) =>
@@ -131,7 +133,9 @@ const AccomodationScreen = ({ match }) => {
                       </Row>
                     </Col>
                     <Col>
-                      <Row className='px-3 pb-1'>To</Row>
+                      <Row className='px-3 pb-1'>
+                        <h6 className='px-0 mt-1 mb-0'>To</h6>
+                      </Row>
                       <Row>
                         <DatePicker
                           selected={toDate}
@@ -149,7 +153,9 @@ const AccomodationScreen = ({ match }) => {
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Row>
-                    <Col>Capacity</Col>
+                    <Col>
+                      <h6 className='px-0 mt-1'>Capacity</h6>
+                    </Col>
                     <Col>
                       {accomodation.capacity === 1
                         ? `${accomodation.capacity} guest`
@@ -159,7 +165,9 @@ const AccomodationScreen = ({ match }) => {
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <Row>
-                    <Col>Amenities</Col>
+                    <Col>
+                      <h6 className='px-0 mt-1'>Amenities</h6>
+                    </Col>
                   </Row>
                   <Row>
                     <Col>
@@ -170,6 +178,16 @@ const AccomodationScreen = ({ match }) => {
                         </span>
                       ))}
                     </Col>
+                  </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <Row>
+                    <Col>
+                      <h6 className='px-0 mt-1'>Description</h6>
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col>{accomodation.description}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
@@ -187,7 +205,7 @@ const AccomodationScreen = ({ match }) => {
                         fromDate
                       )}&to=${DateHelper.toIsoDate(toDate)}`}
                     >
-                      <div className='d-grid gap-2'>
+                      <div className='d-grid gap-2 mt-2'>
                         <Button variant='primary'>Reserve</Button>
                       </div>
                     </LinkContainer>
