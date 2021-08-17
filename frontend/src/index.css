@@ -31,3 +31,7 @@ div {
 .form-group {
   margin-bottom: 0.2rem;
 }
+
+.badge {
+  color: var(--bs-dark);
+}

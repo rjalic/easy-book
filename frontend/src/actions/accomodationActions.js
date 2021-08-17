@@ -22,14 +22,16 @@ import {
 } from '../constants/accomodationConstants';
 
 export const listAccomodations =
-  (keyword = '', pageNumber = '1') =>
+  (query = '', pageNumber = '1') =>
   async (dispatch) => {
     // query
     try {
       dispatch({ type: ACCOMODATION_LIST_REQUEST });
 
       const { data } = await axios.get(
-        `/api/accomodations?keyword=${keyword}&pageNumber=${pageNumber}`
+        `/api/accomodations${query}${
+          query === '' ? '?' : '&'
+        }pageNumber=${pageNumber}`
       );
 
       dispatch({
@@ -47,26 +49,30 @@ export const listAccomodations =
     }
   };
 
-export const listAccomodationDetails = (id) => async (dispatch) => {
-  try {
-    dispatch({ type: ACCOMODATION_DETAILS_REQUEST });
+export const listAccomodationDetails =
+  (id, populateAmenities = false) =>
+  async (dispatch) => {
+    try {
+      dispatch({ type: ACCOMODATION_DETAILS_REQUEST });
 
-    const { data } = await axios.get(`/api/accomodations/${id}`);
+      const { data } = await axios.get(
+        `/api/accomodations/${id}?populateAmenities=${populateAmenities}`
+      );
 
-    dispatch({
-      type: ACCOMODATION_DETAILS_SUCCESS,
-      payload: data,
-    });
-  } catch (error) {
-    dispatch({
-      type: ACCOMODATION_DETAILS_FAIL,
-      payload:
-        error.response && error.response.data.message
-          ? error.response.data.message
-          : error.message,
-    });
-  }
-};
+      dispatch({
+        type: ACCOMODATION_DETAILS_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: ACCOMODATION_DETAILS_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
 
 export const deleteAccomodation = (id) => async (dispatch, getState) => {
   try {

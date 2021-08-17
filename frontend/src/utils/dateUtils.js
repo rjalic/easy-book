@@ -10,6 +10,7 @@ export class DateHelper {
 
   static normalizeDate = (date) => {
     let dateObject = new Date(date);
+    dateObject.setHours(0, 0, 0, 0);
     return dateObject.toISOString();
   };
 
@@ -27,5 +28,10 @@ export class DateHelper {
     const date1 = new Date(d1);
     const date2 = new Date(d2);
     return Math.floor((date2 - date1) / 86400000);
+  };
+
+  static addDays = (date, days) => {
+    const dateObject = new Date(date);
+    return dateObject.setDate(dateObject.getDate() + days);
   };
 }

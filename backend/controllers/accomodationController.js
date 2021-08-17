@@ -5,8 +5,14 @@ import Accomodation from '../models/accomodationModel.js';
 // @route   GET /api/accomodations
 // @access  Public
 const getAccomodations = asyncHandler(async (req, res) => {
-  const pageSize = 5;
+  const pageSize = 10;
   const page = Number(req.query.pageNumber) || 1;
+  const capacity = Number(req.query.capacity) || 1;
+  const minPrice = Number(req.query.minPrice) || 0;
+  const maxPrice = Number(req.query.maxPrice) || 100000000;
+  const city = req.query.city || '';
+  const country = req.query.country || '';
+  const rating = Number(req.query.rating) || 0;
 
   console.log(req.query);
   const keyword = req.query.keyword
@@ -18,9 +24,31 @@ const getAccomodations = asyncHandler(async (req, res) => {
       }
     : {};
 
-  const count = await Accomodation.countDocuments({ ...keyword });
+  const count = await Accomodation.countDocuments({
+    name: { $regex: req.query.keyword ? req.query.keyword : '', $options: 'i' },
+    capacity: { $gte: capacity },
+    price: { $gte: minPrice, $lt: maxPrice },
+    'location.city': { $regex: city, $options: 'i' },
+    'location.country': { $regex: country, $options: 'i' },
+    rating: { $gte: rating },
+  });
+
+  console.log(count);
 
   const accomodations = await Accomodation.find({ ...keyword })
+    .where('capacity')
+    .gte(capacity)
+    .where('price')
+    .gte(minPrice)
+    .lt(maxPrice)
+    .where({
+      'location.city': { $regex: city, $options: 'i' },
+    })
+    .where({
+      'location.country': { $regex: country, $options: 'i' },
+    })
+    .where('rating')
+    .gte(rating)
     .populate('host', 'name')
     .limit(pageSize)
     .skip(pageSize * (page - 1));
@@ -32,12 +60,22 @@ const getAccomodations = asyncHandler(async (req, res) => {
 // @route   GET /api/accomodations/:id
 // @access  Public
 const getAccomodationById = asyncHandler(async (req, res) => {
-  const accomodation = await Accomodation.findById(req.params.id).populate(
+  const populateAmenities =
+    req.query.populateAmenities === 'true' ? true : false;
+  console.log(req.query);
+  console.log(populateAmenities);
+
+  let accomodation = await Accomodation.findById(req.params.id).populate(
     'reviews.user',
     'name'
   );
 
   if (accomodation) {
+    if (populateAmenities) {
+      accomodation = await Accomodation.findById(req.params.id)
+        .populate('reviews.user', 'name')
+        .populate('amenities');
+    }
     res.json(accomodation);
   } else {
     res.status(404);
@@ -141,9 +179,10 @@ const createAccomodationReview = asyncHandler(async (req, res) => {
     accomodation.reviews.push(review);
 
     accomodation.numReviews = accomodation.reviews.length;
-    accomodation.rating =
+    accomodation.rating = (
       accomodation.reviews.reduce((acc, item) => item.rating + acc, 0) /
-      accomodation.reviews.length;
+      accomodation.reviews.length
+    ).toFixed(1);
 
     await accomodation.save();
     res.status(201).json({ message: 'Review added' });

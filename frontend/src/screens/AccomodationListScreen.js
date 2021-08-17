@@ -11,7 +11,10 @@ import {
   deleteAccomodation,
   listAccomodations,
 } from '../actions/accomodationActions';
-import { ACCOMODATION_CREATE_RESET } from '../constants/accomodationConstants';
+import {
+  ACCOMODATION_CREATE_RESET,
+  ACCOMODATION_DETAILS_RESET,
+} from '../constants/accomodationConstants';
 
 const AccomodationListScreen = ({ history, match }) => {
   const dispatch = useDispatch();
@@ -46,6 +49,7 @@ const AccomodationListScreen = ({ history, match }) => {
 
   useEffect(() => {
     dispatch({ type: ACCOMODATION_CREATE_RESET });
+    dispatch({ type: ACCOMODATION_DETAILS_RESET });
 
     if (!userInfo || !userInfo.isAdmin) {
       history.push('/login');
@@ -140,7 +144,11 @@ const AccomodationListScreen = ({ history, match }) => {
             </tbody>
           </Table>
           <div className='d-flex justify-content-center'>
-            <Paginate pages={pages} page={page} isAdmin={true} />
+            <Paginate
+              pages={pages}
+              page={page}
+              path={'/admin/accomodationList'}
+            />
           </div>
         </>
       )}
