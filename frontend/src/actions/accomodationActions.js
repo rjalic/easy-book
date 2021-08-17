@@ -19,12 +19,14 @@ import {
   ACCOMODATION_CREATE_REVIEW_REQUEST,
   ACCOMODATION_CREATE_REVIEW_SUCCESS,
   ACCOMODATION_CREATE_REVIEW_FAIL,
+  ACCOMODATION_MY_LIST_REQUEST,
+  ACCOMODATION_MY_LIST_SUCCESS,
+  ACCOMODATION_MY_LIST_FAIL,
 } from '../constants/accomodationConstants';
 
 export const listAccomodations =
   (query = '', pageNumber = '1') =>
   async (dispatch) => {
-    // query
     try {
       dispatch({ type: ACCOMODATION_LIST_REQUEST });
 
@@ -41,6 +43,43 @@ export const listAccomodations =
     } catch (error) {
       dispatch({
         type: ACCOMODATION_LIST_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
+
+export const listMyAccomodations =
+  (query = '', pageNumber = '1') =>
+  async (dispatch, getState) => {
+    try {
+      dispatch({ type: ACCOMODATION_MY_LIST_REQUEST });
+
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      const { data } = await axios.get(
+        `/api/accomodations/myaccomodations?pageNumber=${pageNumber}`,
+        config
+      );
+
+      console.log(data);
+      dispatch({
+        type: ACCOMODATION_MY_LIST_SUCCESS,
+        payload: data,
+      });
+    } catch (error) {
+      dispatch({
+        type: ACCOMODATION_MY_LIST_FAIL,
         payload:
           error.response && error.response.data.message
             ? error.response.data.message

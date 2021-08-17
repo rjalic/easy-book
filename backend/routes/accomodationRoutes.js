@@ -6,22 +6,22 @@ import {
   createAccomodation,
   updateAccomodation,
   createAccomodationReview,
+  getMyAccomodations,
 } from '../controllers/accomodationController.js';
-import { protect, isAdmin } from '../middleware/authMiddleware.js';
+import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-router
-  .route('/')
-  .get(getAccomodations)
-  .post(protect, isAdmin, createAccomodation);
+router.route('/').get(getAccomodations).post(protect, createAccomodation);
+
+router.route('/myaccomodations').get(protect, getMyAccomodations);
 
 router.route('/:id/reviews').post(protect, createAccomodationReview);
 
 router
   .route('/:id')
   .get(getAccomodationById)
-  .delete(protect, isAdmin, deleteAccomodation)
-  .put(protect, isAdmin, updateAccomodation);
+  .delete(protect, deleteAccomodation)
+  .put(protect, updateAccomodation);
 
 export default router;

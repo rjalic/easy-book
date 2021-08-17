@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Accomodation from '../models/accomodationModel.js';
+import mongoose from 'mongoose';
 
 // @desc    Fetch all accomodations
 // @route   GET /api/accomodations
@@ -33,8 +34,6 @@ const getAccomodations = asyncHandler(async (req, res) => {
     rating: { $gte: rating },
   });
 
-  console.log(count);
-
   const accomodations = await Accomodation.find({ ...keyword })
     .where('capacity')
     .gte(capacity)
@@ -56,14 +55,26 @@ const getAccomodations = asyncHandler(async (req, res) => {
   res.json({ accomodations, page, pages: Math.ceil(count / pageSize) });
 });
 
+// @desc    Get current user's accomodations
+// @route   GET /api/accomodations/myaccomodations
+// @access  Private
+const getMyAccomodations = asyncHandler(async (req, res) => {
+  const pageSize = 10;
+  const page = Number(req.query.pageNumber) || 1;
+  const obj = mongoose.Types.ObjectId(req.user.id);
+  const accomodations = await Accomodation.find({ host: obj });
+
+  const count = await Accomodation.countDocuments({ host: obj });
+
+  res.json({ accomodations, page, pages: Math.ceil(count / pageSize) });
+});
+
 // @desc    Fetch single accomodation
 // @route   GET /api/accomodations/:id
 // @access  Public
 const getAccomodationById = asyncHandler(async (req, res) => {
   const populateAmenities =
     req.query.populateAmenities === 'true' ? true : false;
-  console.log(req.query);
-  console.log(populateAmenities);
 
   let accomodation = await Accomodation.findById(req.params.id).populate(
     'reviews.user',
@@ -90,6 +101,10 @@ const deleteAccomodation = asyncHandler(async (req, res) => {
   const accomodation = await Accomodation.findById(req.params.id);
 
   if (accomodation) {
+    if (accomodation.host.toString() !== req.user.id && !req.user.isAdmin) {
+      res.status(401);
+      throw new Error('Not authorized to delete this accommodation.');
+    }
     await accomodation.remove();
     res.json({ message: 'Accomodation deleted' });
   } else {
@@ -125,11 +140,19 @@ const createAccomodation = asyncHandler(async (req, res) => {
 
 // @desc    Update accomodation
 // @route   PUT /api/accomodations/:id
-// @access  Private/admin
+// @access  Private
 const updateAccomodation = asyncHandler(async (req, res) => {
   const accomodation = await Accomodation.findById(req.params.id);
 
   if (accomodation) {
+    console.log(accomodation.host.toString(), req.user.id);
+
+    if (accomodation.host.toString() !== req.user.id && !req.user.isAdmin) {
+      console.log('here');
+      res.status(401);
+      throw new Error('No authorized to update this accommodation.');
+    }
+
     const { name, price, image, description, location, capacity, amenities } =
       req.body;
 
@@ -199,4 +222,5 @@ export {
   createAccomodation,
   updateAccomodation,
   createAccomodationReview,
+  getMyAccomodations,
 };
