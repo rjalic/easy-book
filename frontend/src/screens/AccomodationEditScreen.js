@@ -52,9 +52,10 @@ const AccomodationEditScreen = ({ match, history }) => {
     if (successUpdate) {
       dispatch({ type: ACCOMODATION_UPDATE_RESET });
       dispatch({ type: ACCOMODATION_DETAILS_RESET });
-      history.push('/admin/accomodationList');
+      history.push('/accomodationList');
     } else {
       if (!accomodation.name || accomodation._id !== accomodationId) {
+        dispatch({ type: ACCOMODATION_UPDATE_RESET });
         dispatch(listAccomodationDetails(accomodationId));
         dispatch(listAmenities());
       } else {
@@ -120,7 +121,7 @@ const AccomodationEditScreen = ({ match, history }) => {
 
   return (
     <>
-      <Link to='/admin/accomodationList' className='btn btn-light my-3'>
+      <Link to='/accomodationList' className='btn btn-light my-3'>
         Go Back
       </Link>
       <FormContainer>

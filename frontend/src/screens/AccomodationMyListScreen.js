@@ -9,21 +9,22 @@ import Paginate from '../components/Paginate';
 import {
   createAccomodation,
   deleteAccomodation,
-  listAccomodations,
+  listMyAccomodations,
 } from '../actions/accomodationActions';
 import {
   ACCOMODATION_CREATE_RESET,
   ACCOMODATION_DELETE_RESET,
   ACCOMODATION_DETAILS_RESET,
 } from '../constants/accomodationConstants';
+import NotFound from '../components/NotFound';
 
-const AccomodationListScreen = ({ history }) => {
+const AccomodationMyListScreen = ({ history, match }) => {
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const accomodationList = useSelector((state) => state.accomodationList);
+  const accomodationList = useSelector((state) => state.accomodationMyList);
   const { loading, error, accomodations, page, pages } = accomodationList;
 
   const accomodationDelete = useSelector((state) => state.accomodationDelete);
@@ -53,14 +54,14 @@ const AccomodationListScreen = ({ history }) => {
     dispatch({ type: ACCOMODATION_DETAILS_RESET });
     dispatch({ type: ACCOMODATION_DELETE_RESET });
 
-    if (!userInfo || !userInfo.isAdmin) {
+    if (!userInfo) {
       history.push('/login');
     }
 
     if (successCreate) {
       history.push(`/accomodation/${createdAccmodation._id}/edit`);
     } else {
-      dispatch(listAccomodations('', pageNumber));
+      dispatch(listMyAccomodations('', pageNumber));
     }
   }, [
     dispatch,
@@ -102,6 +103,10 @@ const AccomodationListScreen = ({ history }) => {
         <Loader />
       ) : error ? (
         <Message variant='danger'>{error}</Message>
+      ) : accomodations ? (
+        <NotFound
+          message={`Looks like you have no accommodations listed... Create one!`}
+        />
       ) : (
         <>
           <Table striped bordered hover responsive className='table-sm'>
@@ -111,7 +116,6 @@ const AccomodationListScreen = ({ history }) => {
                 <th>NAME</th>
                 <th>PRICE</th>
                 <th>CAPACITY</th>
-                <th>HOST</th>
                 <th>RATING</th>
                 <th>ACTIONS</th>
               </tr>
@@ -123,7 +127,6 @@ const AccomodationListScreen = ({ history }) => {
                   <td>{accomodation.name}</td>
                   <td>${accomodation.price}</td>
                   <td>{accomodation.capacity}</td>
-                  <td>{accomodation.host.name}</td>
                   <td>{accomodation.rating}</td>
                   <td>
                     <LinkContainer
@@ -146,11 +149,7 @@ const AccomodationListScreen = ({ history }) => {
             </tbody>
           </Table>
           <div className='d-flex justify-content-center'>
-            <Paginate
-              pages={pages}
-              page={page}
-              path={'/admin/accomodationList'}
-            />
+            <Paginate pages={pages} page={page} path={'/myAccomodations'} />
           </div>
         </>
       )}
@@ -158,4 +157,4 @@ const AccomodationListScreen = ({ history }) => {
   );
 };
 
-export default AccomodationListScreen;
+export default AccomodationMyListScreen;

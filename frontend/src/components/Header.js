@@ -26,9 +26,16 @@ const Header = ({ history }) => {
             <Nav className='ms-auto'>
               <LinkContainer to='/'>
                 <Nav.Link>
-                  <i className='fas fa-home'></i> Home
+                  <i className='fas fa-home' /> Home
                 </Nav.Link>
               </LinkContainer>
+              {userInfo && !userInfo.isAdmin && (
+                <LinkContainer to='/myAccomodations'>
+                  <Nav.Link>
+                    <i className='fas fa-bed' /> Accommodations
+                  </Nav.Link>
+                </LinkContainer>
+              )}
               {userInfo && userInfo.isAdmin && (
                 <NavDropdown title='Admin' id='adminmenu'>
                   <LinkContainer to='/admin/userList'>

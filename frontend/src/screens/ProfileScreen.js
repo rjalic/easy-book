@@ -6,6 +6,7 @@ import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { getUserDetails, updateUserProfile } from '../actions/userActions';
 import { listMyBookings } from '../actions/bookingActions';
+import NotFound from '../components/NotFound';
 
 const ProfileScreen = ({ location, history }) => {
   const [name, setName] = useState('');
@@ -114,6 +115,12 @@ const ProfileScreen = ({ location, history }) => {
           <Loader />
         ) : errorBookings ? (
           <Message variant='danger'>{errorBookings}</Message>
+        ) : bookingMyList ? (
+          <NotFound
+            message={`Looks like you have no bookings!`}
+            redirectTo={'/'}
+            redirectBtn={'Explore!'}
+          />
         ) : (
           <Table striped bordered hover responsive className='table-sm'>
             <thead>

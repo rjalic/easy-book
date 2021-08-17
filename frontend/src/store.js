@@ -8,6 +8,7 @@ import {
   accomodationCreateReducer,
   accomodationUpdateReducer,
   accomodationCreateReviewReducer,
+  accomodationMyListReducer,
 } from './reducers/accomodationReducers.js';
 import {
   userLoginReducer,
@@ -34,6 +35,7 @@ import {
 
 const reducer = combineReducers({
   accomodationList: accomodationListReducer,
+  accomodationMyList: accomodationMyListReducer,
   accomodationDetails: accomodationDetailsReducer,
   accomodationDelete: accomodationDeleteReducer,
   accomodationCreate: accomodationCreateReducer,

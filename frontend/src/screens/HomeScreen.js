@@ -23,7 +23,6 @@ const HomeScreen = ({ history }) => {
   }
 
   const query = useQuery();
-  console.log(currentQuery);
   const pageNumber = query.get('page') ? query.get('page') : 1;
 
   useEffect(() => {
@@ -45,7 +44,10 @@ const HomeScreen = ({ history }) => {
             </Col>
             <Col sm={9}>
               {!loading && pages === 0 ? (
-                <NotFound />
+                <NotFound
+                  message={`We couldn't find what you were looking for...`}
+                  backBtn={true}
+                />
               ) : (
                 <Row>
                   <ul className='list-group'>

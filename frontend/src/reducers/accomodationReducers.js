@@ -21,6 +21,10 @@ import {
   ACCOMODATION_CREATE_REVIEW_SUCCESS,
   ACCOMODATION_CREATE_REVIEW_FAIL,
   ACCOMODATION_CREATE_REVIEW_RESET,
+  ACCOMODATION_DELETE_RESET,
+  ACCOMODATION_MY_LIST_REQUEST,
+  ACCOMODATION_MY_LIST_SUCCESS,
+  ACCOMODATION_MY_LIST_FAIL,
 } from '../constants/accomodationConstants';
 
 export const accomodationListReducer = (
@@ -38,6 +42,27 @@ export const accomodationListReducer = (
         page: action.payload.page,
       };
     case ACCOMODATION_LIST_FAIL:
+      return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const accomodationMyListReducer = (
+  state = { accomodations: [] },
+  action
+) => {
+  switch (action.type) {
+    case ACCOMODATION_MY_LIST_REQUEST:
+      return { loading: true, accomodations: [] };
+    case ACCOMODATION_MY_LIST_SUCCESS:
+      return {
+        loading: false,
+        accomodations: action.payload.accomodations,
+        pages: action.payload.pages,
+        page: action.payload.page,
+      };
+    case ACCOMODATION_MY_LIST_FAIL:
       return { loading: false, error: action.payload };
     default:
       return state;
@@ -73,6 +98,8 @@ export const accomodationDeleteReducer = (
       return { loading: false, success: true };
     case ACCOMODATION_DELETE_FAIL:
       return { loading: false, error: action.payload };
+    case ACCOMODATION_DELETE_RESET:
+      return {};
     default:
       return state;
   }
