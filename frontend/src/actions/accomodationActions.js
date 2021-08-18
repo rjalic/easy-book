@@ -72,7 +72,6 @@ export const listMyAccomodations =
         config
       );
 
-      console.log(data);
       dispatch({
         type: ACCOMODATION_MY_LIST_SUCCESS,
         payload: data,

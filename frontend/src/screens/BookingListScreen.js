@@ -49,8 +49,12 @@ const BookingListScreen = ({ history }) => {
             {bookings.map((booking) => (
               <tr key={booking._id}>
                 <td>{booking._id}</td>
-                <td>{booking.user.name}</td>
-                <td>{booking.accomodation.name}</td>
+                <td>{booking.user === null ? 'UNKNOWN' : booking.user.name}</td>
+                <td>
+                  {booking.accomodation === null
+                    ? 'UNKNOWN'
+                    : booking.accomodation.name}
+                </td>
                 <td>${booking.totalPrice}</td>
                 <td>
                   {booking.isPaid ? (

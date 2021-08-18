@@ -123,7 +123,11 @@ const AccomodationListScreen = ({ history }) => {
                   <td>{accomodation.name}</td>
                   <td>${accomodation.price}</td>
                   <td>{accomodation.capacity}</td>
-                  <td>{accomodation.host.name}</td>
+                  <td>
+                    {accomodation.host === null
+                      ? 'UNKNOWN'
+                      : accomodation.host.name}
+                  </td>
                   <td>{accomodation.rating}</td>
                   <td>
                     <LinkContainer

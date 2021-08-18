@@ -171,12 +171,18 @@ const AccomodationScreen = ({ match }) => {
                   </Row>
                   <Row>
                     <Col>
-                      {accomodation.amenities.map((amenity) => (
-                        <span key={amenity._id} className='m-1'>
-                          <i className={amenity.icon} key={amenity.id} />{' '}
-                          {amenity.name}
+                      {accomodation.amenities.length === 0 ? (
+                        <span>
+                          Looks like the host didn't specify any amenities...
                         </span>
-                      ))}
+                      ) : (
+                        accomodation.amenities.map((amenity) => (
+                          <span key={amenity._id} className='m-1'>
+                            <i className={amenity.icon} key={amenity.id} />{' '}
+                            {amenity.name}
+                          </span>
+                        ))
+                      )}
                     </Col>
                   </Row>
                 </ListGroup.Item>

@@ -115,7 +115,7 @@ const ProfileScreen = ({ location, history }) => {
           <Loader />
         ) : errorBookings ? (
           <Message variant='danger'>{errorBookings}</Message>
-        ) : bookingMyList ? (
+        ) : bookings.length === 0 ? (
           <NotFound
             message={`Looks like you have no bookings!`}
             redirectTo={'/'}

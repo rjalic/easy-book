@@ -103,7 +103,7 @@ const AccomodationMyListScreen = ({ history, match }) => {
         <Loader />
       ) : error ? (
         <Message variant='danger'>{error}</Message>
-      ) : accomodations ? (
+      ) : accomodations.length === 0 ? (
         <NotFound
           message={`Looks like you have no accommodations listed... Create one!`}
         />

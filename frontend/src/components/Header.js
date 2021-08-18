@@ -24,7 +24,7 @@ const Header = ({ history }) => {
           <Navbar.Toggle aria-controls='basic-navbar-nav' />
           <Navbar.Collapse id='basic-navbar-nav'>
             <Nav className='ms-auto'>
-              <LinkContainer to='/'>
+              <LinkContainer to='/' exact={true}>
                 <Nav.Link>
                   <i className='fas fa-home' /> Home
                 </Nav.Link>
