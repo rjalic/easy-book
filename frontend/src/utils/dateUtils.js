@@ -15,7 +15,8 @@ export class DateHelper {
   };
 
   static toIsoDate = (date) => {
-    const dateObject = new Date(date);
+    let dateObject = new Date(date);
+    dateObject = new Date(this.addDays(dateObject, 1));
     return dateObject.toISOString().split('T')[0];
   };
 

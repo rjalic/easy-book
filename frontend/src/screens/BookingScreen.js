@@ -56,8 +56,6 @@ const BookingScreen = ({ history, match, location }) => {
         accomodation.price * DateHelper.daysBetween(bookedFrom, bookedTo)
       );
     }
-    console.log(bookedFrom);
-    console.log(bookedTo);
   }, [
     accomodation,
     bookedFrom,
