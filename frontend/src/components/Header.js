@@ -32,7 +32,7 @@ const Header = ({ history }) => {
               {userInfo && !userInfo.isAdmin && (
                 <LinkContainer to='/myAccomodations'>
                   <Nav.Link>
-                    <i className='fas fa-bed' /> Accommodations
+                    <i className='fas fa-bed' /> Dashboard
                   </Nav.Link>
                 </LinkContainer>
               )}
