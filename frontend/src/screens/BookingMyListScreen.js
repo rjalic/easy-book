@@ -4,21 +4,21 @@ import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { listBookings } from '../actions/bookingActions';
+import { listOwnerBookings } from '../actions/bookingActions';
 import { DateHelper } from '../utils/dateUtils';
 
-const BookingListScreen = ({ history }) => {
+const BookingOwnerListScreen = ({ history }) => {
   const dispatch = useDispatch();
 
-  const bookingList = useSelector((state) => state.bookingList);
-  const { loading, error, bookings } = bookingList;
+  const bookingOwnerList = useSelector((state) => state.bookingOwnerList);
+  const { loading, error, bookings } = bookingOwnerList;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
   useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
-      dispatch(listBookings());
+    if (userInfo) {
+      dispatch(listOwnerBookings());
     } else {
       history.push('/login');
     }
@@ -74,7 +74,7 @@ const BookingListScreen = ({ history }) => {
                   </a>
                   <Link
                     to={`/bookings/${booking._id}`}
-                    className='btn btn-primary btn-sm'
+                    className='btn btn-primary btn-sm m-1'
                   >
                     <i
                       className='fas fa-angle-right'
@@ -95,4 +95,4 @@ const BookingListScreen = ({ history }) => {
   );
 };
 
-export default BookingListScreen;
+export default BookingOwnerListScreen;

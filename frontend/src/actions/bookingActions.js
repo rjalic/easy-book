@@ -12,6 +12,9 @@ import {
   BOOKING_MY_LIST_FAIL,
   BOOKING_MY_LIST_REQUEST,
   BOOKING_MY_LIST_SUCCESS,
+  BOOKING_OWNER_LIST_FAIL,
+  BOOKING_OWNER_LIST_REQUEST,
+  BOOKING_OWNER_LIST_SUCCESS,
   BOOKING_PAY_FAIL,
   BOOKING_PAY_REQUEST,
   BOOKING_PAY_SUCCESS,
@@ -191,6 +194,39 @@ export const listBookings = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: BOOKING_LIST_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const listOwnerBookings = () => async (dispatch, getState) => {
+  try {
+    dispatch({
+      type: BOOKING_OWNER_LIST_REQUEST,
+    });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.get(`/api/bookings/owner`, config);
+
+    dispatch({
+      type: BOOKING_OWNER_LIST_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    dispatch({
+      type: BOOKING_OWNER_LIST_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

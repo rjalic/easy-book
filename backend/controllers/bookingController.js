@@ -89,7 +89,7 @@ const getMyBookings = asyncHandler(async (req, res) => {
 // @access  Private/admin
 const getBookings = asyncHandler(async (req, res) => {
   const bookings = await Booking.find({})
-    .populate('user', 'id name')
+    .populate('user', 'id name email')
     .populate('accomodation', 'id name');
 
   res.json(bookings);
@@ -142,7 +142,9 @@ const getOwnerBookings = asyncHandler(async (req, res) => {
   const accomodations = await Accomodation.find({ host: obj });
   const bookings = await Booking.find({
     accomodation: { $in: accomodations },
-  }).populate('accomodation', 'name');
+  })
+    .populate('accomodation', 'name')
+    .populate('user', 'name email');
   res.json(bookings);
 });
 

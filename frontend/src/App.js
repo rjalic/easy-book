@@ -17,6 +17,7 @@ import AccomodationEditScreen from './screens/AccomodationEditScreen';
 import BookingListScreen from './screens/BookingListScreen';
 import AmenityListScreen from './screens/AmenityListScreen';
 import AccomodationMyListScreen from './screens/AccomodationMyListScreen';
+import BookingOwnerListScreen from './screens/BookingMyListScreen';
 
 const App = () => {
   return (
@@ -36,6 +37,7 @@ const App = () => {
           <Route path='/bookings/:id' component={PaymentScreen} />
           <Route path='/admin/userList' component={UserListScreen} />
           <Route path='/admin/bookingList' component={BookingListScreen} />
+          <Route path='/myBookings' component={BookingOwnerListScreen} />
           <Route path='/admin/user/:id/edit' component={UserEditScreen} />
           <Route
             path='/accomodation/:id/edit'

@@ -211,14 +211,19 @@ const AccomodationScreen = ({ match }) => {
                 <Message>No Reviews</Message>
               )}
               <ListGroup variant='flush'>
-                {accomodation.reviews.map((review) => (
-                  <ListGroup.Item key={review._id}>
-                    <strong>{review.user.name}</strong>
-                    <Rating value={review.rating} />
-                    <p>{DateHelper.toDateString(review.createdAt)}</p>
-                    <p>{review.comment}</p>
-                  </ListGroup.Item>
-                ))}
+                {accomodation.reviews.map(
+                  (review) =>
+                    review.user && (
+                      <ListGroup.Item key={review._id}>
+                        <strong>
+                          {review.user ? review.user.name : 'UNKNOWN'}
+                        </strong>
+                        <Rating value={review.rating} />
+                        <p>{DateHelper.toDateString(review.createdAt)}</p>
+                        <p>{review.comment}</p>
+                      </ListGroup.Item>
+                    )
+                )}
               </ListGroup>
             </Col>
           </Row>
