@@ -1,5 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import Accomodation from '../models/accomodationModel.js';
+import Booking from '../models/bookingModel.js';
 import mongoose from 'mongoose';
 
 // @desc    Fetch all accomodations
@@ -175,44 +176,34 @@ const updateAccomodation = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Create new review
-// @route   POST /api/accomodations/:id/reviews
-// @access  Private
-const createAccomodationReview = asyncHandler(async (req, res) => {
-  const accomodation = await Accomodation.findById(req.params.id);
+// @desc    Get taken dates
+// @route   GET /api/accomodations/:id/taken
+// @access  Public
+const getTakenDates = asyncHandler(async (req, res) => {
+  const bookings = await Booking.find({ accomodation: req.params.id });
+  let dates = new Set();
 
-  if (accomodation) {
-    const { rating, comment } = req.body;
-
-    const alreadyReviewed = accomodation.reviews.find(
-      (r) => r.user.toString() === req.user._id.toString()
-    );
-
-    if (alreadyReviewed) {
-      res.status(400);
-      throw new Error('Accomodation already reviewed');
-    }
-
-    const review = {
-      rating: Number(rating),
-      comment,
-      user: req.user._id,
-    };
-
-    accomodation.reviews.push(review);
-
-    accomodation.numReviews = accomodation.reviews.length;
-    accomodation.rating = (
-      accomodation.reviews.reduce((acc, item) => item.rating + acc, 0) /
-      accomodation.reviews.length
-    ).toFixed(1);
-
-    await accomodation.save();
-    res.status(201).json({ message: 'Review added' });
-  } else {
-    res.status(404);
-    throw new Error('Accomodation not found');
+  if (bookings) {
+    bookings.forEach((booking) => {
+      const fromDate = new Date(booking.bookedFrom);
+      const toDate = new Date(booking.bookedTo);
+      let temp = new Date(fromDate);
+      while (true) {
+        if (
+          temp.getFullYear() === toDate.getFullYear() &&
+          temp.getMonth() === toDate.getMonth() &&
+          temp.getDate() === toDate.getDate()
+        ) {
+          break;
+        } else {
+          dates = dates.add(new Date(temp).toISOString().split('T')[0]);
+          temp.setDate(temp.getDate() + 1);
+        }
+      }
+    });
   }
+
+  res.json(Array.from(dates));
 });
 
 export {
@@ -221,6 +212,6 @@ export {
   deleteAccomodation,
   createAccomodation,
   updateAccomodation,
-  createAccomodationReview,
   getMyAccomodations,
+  getTakenDates,
 };

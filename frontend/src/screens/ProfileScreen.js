@@ -126,7 +126,8 @@ const ProfileScreen = ({ location, history }) => {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>DATE</th>
+                <th>FROM</th>
+                <th>TO</th>
                 <th>TOTAL</th>
                 <th>PAID</th>
                 <th>ACTIONS</th>
@@ -136,7 +137,8 @@ const ProfileScreen = ({ location, history }) => {
               {bookings.map((booking) => (
                 <tr key={booking._id}>
                   <td>{booking._id}</td>
-                  <td>{booking.createdAt.substring(0, 10)}</td>
+                  <td>{booking.bookedFrom.substring(0, 10)}</td>
+                  <td>{booking.bookedTo.substring(0, 10)}</td>
                   <td>${booking.totalPrice}</td>
                   <td>
                     {booking.isPaid ? (

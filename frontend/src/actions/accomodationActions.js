@@ -209,7 +209,7 @@ export const updateAccomodation =
   };
 
 export const createAccomodationReview =
-  (accomodationId, review) => async (dispatch, getState) => {
+  (bookingId, review) => async (dispatch, getState) => {
     try {
       dispatch({
         type: ACCOMODATION_CREATE_REVIEW_REQUEST,
@@ -226,11 +226,7 @@ export const createAccomodationReview =
         },
       };
 
-      await axios.post(
-        `/api/accomodations/${accomodationId}/reviews`,
-        review,
-        config
-      );
+      await axios.post(`/api/bookings/${bookingId}/review`, review, config);
 
       dispatch({ type: ACCOMODATION_CREATE_REVIEW_SUCCESS });
     } catch (error) {

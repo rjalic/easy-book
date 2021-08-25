@@ -1,26 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Row, Col, Image, ListGroup, Button, Form } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Row, Col, Image, ListGroup, Button } from 'react-bootstrap';
 import Rating from '../components/Rating';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import DatePicker from 'react-datepicker';
-import {
-  listAccomodationDetails,
-  createAccomodationReview,
-} from '../actions/accomodationActions';
+import { listAccomodationDetails } from '../actions/accomodationActions';
 import { DateHelper } from '../utils/dateUtils';
 import { LinkContainer } from 'react-router-bootstrap';
-import { ACCOMODATION_CREATE_REVIEW_RESET } from '../constants/accomodationConstants';
 
 const AccomodationScreen = ({ match }) => {
   const [fromDate, setFromDate] = useState(new Date(DateHelper.today()));
   const [toDate, setToDate] = useState(new Date(DateHelper.tomorrow()));
-  const [rating, setRating] = useState(0);
-  const [comment, setComment] = useState('');
 
   const dispatch = useDispatch();
+
+  const excluded = [
+    '2021-08-31',
+    '2021-09-01',
+    '2021-09-02',
+    '2021-08-23',
+    '2021-08-24',
+    '2021-08-25',
+    '2021-08-26',
+  ];
+  const dates = excluded.map((e) => Date.parse(e));
 
   const accomodationDetails = useSelector((state) => state.accomodationDetails);
   const { loading, error, accomodation } = accomodationDetails;
@@ -28,32 +32,9 @@ const AccomodationScreen = ({ match }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const accomodationCreateReview = useSelector(
-    (state) => state.accomodationCreateReview
-  );
-  const { error: errorAccomodationReview, success: successAccomodationReview } =
-    accomodationCreateReview;
-
   useEffect(() => {
-    if (successAccomodationReview) {
-      alert('Review submitted');
-      setRating(0);
-      setComment('');
-      dispatch({ type: ACCOMODATION_CREATE_REVIEW_RESET });
-    }
-
     dispatch(listAccomodationDetails(match.params.id, true));
-  }, [dispatch, match, fromDate, toDate, successAccomodationReview]);
-
-  const submitHandler = (e) => {
-    e.preventDefault();
-    dispatch(
-      createAccomodationReview(match.params.id, {
-        rating,
-        comment,
-      })
-    );
-  };
+  }, [dispatch, match, fromDate, toDate]);
 
   return (
     <>
@@ -129,6 +110,7 @@ const AccomodationScreen = ({ match }) => {
                           startDate={fromDate}
                           endDate={toDate}
                           minDate={Date.now()}
+                          excludeDates={dates}
                         />
                       </Row>
                     </Col>
@@ -146,6 +128,7 @@ const AccomodationScreen = ({ match }) => {
                           startDate={fromDate}
                           endDate={toDate}
                           minDate={new Date(DateHelper.addDays(fromDate, 1))}
+                          excludeDates={dates}
                         />
                       </Row>
                     </Col>
@@ -197,7 +180,7 @@ const AccomodationScreen = ({ match }) => {
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  {toDate < fromDate ? (
+                  {toDate < fromDate || accomodation.host === userInfo._id ? (
                     <div className='d-grid gap-2'>
                       <Button variant='primary' disabled>
                         Reserve
@@ -236,53 +219,6 @@ const AccomodationScreen = ({ match }) => {
                     <p>{review.comment}</p>
                   </ListGroup.Item>
                 ))}
-                <ListGroup.Item>
-                  <strong className='fs-4'>Write A Review</strong>
-                  {errorAccomodationReview && (
-                    <Message variant='danger'>
-                      {errorAccomodationReview}
-                    </Message>
-                  )}
-                  {userInfo ? (
-                    <Form onSubmit={submitHandler}>
-                      <Form.Group>
-                        <Form.Label>Rating</Form.Label>
-                        <Form.Control
-                          as='select'
-                          value={rating}
-                          onChange={(e) => setRating(e.target.value)}
-                        >
-                          <option value='0'>Select...</option>
-                          <option value='1'>1 - Poor</option>
-                          <option value='2'>2 - Fair</option>
-                          <option value='3'>3 - Good</option>
-                          <option value='4'>4 - Very Good</option>
-                          <option value='5'>5 - Excellent</option>
-                        </Form.Control>
-                      </Form.Group>
-                      <Form.Group controlId='comment'>
-                        <Form.Label>Comment</Form.Label>
-                        <Form.Control
-                          as='textarea'
-                          row='3'
-                          value={comment}
-                          onChange={(e) => setComment(e.target.value)}
-                        />
-                      </Form.Group>
-                      <Button
-                        type='submit'
-                        variant='primary'
-                        disabled={rating === 0}
-                      >
-                        Submit
-                      </Button>
-                    </Form>
-                  ) : (
-                    <Message>
-                      Please <Link to='/login'>Sign In</Link> to write a review{' '}
-                    </Message>
-                  )}
-                </ListGroup.Item>
               </ListGroup>
             </Col>
           </Row>

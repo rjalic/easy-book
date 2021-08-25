@@ -1,18 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row, Form, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PayPalButton } from 'react-paypal-button-v2';
 import { getBookingDetails, payBooking } from '../actions/bookingActions';
+import { createAccomodationReview } from '../actions/accomodationActions';
+import { ACCOMODATION_CREATE_REVIEW_RESET } from '../constants/accomodationConstants';
 import Accomodation from '../components/Accomodation';
 import Loader from '../components/Loader';
 import { DateHelper } from '../utils/dateUtils';
 import { BOOKING_PAY_RESET } from '../constants/bookingConstants';
+import Message from '../components/Message';
 
-const PaymentScreen = ({ history, match, location }) => {
+const PaymentScreen = ({ match }) => {
   const bookingId = match.params.id;
 
   const [sdkReady, setSdkReady] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState('');
 
   const dispatch = useDispatch();
 
@@ -21,6 +26,12 @@ const PaymentScreen = ({ history, match, location }) => {
 
   const bookingPay = useSelector((state) => state.bookingPay);
   const { loading: loadingPay, success: successPay } = bookingPay;
+
+  const accomodationCreateReview = useSelector(
+    (state) => state.accomodationCreateReview
+  );
+  const { error: errorAccomodationReview, success: successAccomodationReview } =
+    accomodationCreateReview;
 
   useEffect(() => {
     const addPayPalScript = async () => {
@@ -34,6 +45,13 @@ const PaymentScreen = ({ history, match, location }) => {
       };
       document.body.appendChild(script);
     };
+    if (successAccomodationReview) {
+      alert('Review submitted');
+      setRating(0);
+      setComment('');
+      dispatch({ type: ACCOMODATION_CREATE_REVIEW_RESET });
+      booking.isReviewed = true;
+    }
 
     if (!booking || successPay) {
       dispatch({ type: BOOKING_PAY_RESET });
@@ -45,11 +63,21 @@ const PaymentScreen = ({ history, match, location }) => {
         setSdkReady(true);
       }
     }
-  }, [dispatch, bookingId, booking, successPay]);
+  }, [dispatch, bookingId, booking, successPay, successAccomodationReview]);
 
   const successPaymentHandler = (paymentResult) => {
     console.log(paymentResult);
     dispatch(payBooking(bookingId, paymentResult));
+  };
+
+  const submitReviewHandler = (e) => {
+    e.preventDefault();
+    dispatch(
+      createAccomodationReview(booking._id, {
+        rating,
+        comment,
+      })
+    );
   };
 
   return (
@@ -107,9 +135,9 @@ const PaymentScreen = ({ history, match, location }) => {
               <Row>
                 <span>{booking.paymentMethod}</span>
               </Row>
-              <Row className='mt-2'>
-                {!booking.isPaid && (
-                  <>
+              {!booking.isPaid ? (
+                <>
+                  <Row className='mt-2'>
                     {loadingPay && <Loader />}
                     {!sdkReady ? (
                       <Loader />
@@ -119,9 +147,68 @@ const PaymentScreen = ({ history, match, location }) => {
                         onSuccess={successPaymentHandler}
                       />
                     )}
-                  </>
-                )}
-              </Row>
+                  </Row>
+                </>
+              ) : (
+                <>
+                  <Row className='mt-2'>
+                    <h6>Paid At</h6>
+                  </Row>
+                  <Row>
+                    <span>{new Date(booking.paidAt).toDateString()}</span>
+                  </Row>
+                </>
+              )}
+              {booking.isReviewed ? (
+                <Row className='mt-2 mx-1'>
+                  <Message variant='info'>
+                    You already submitted a review.
+                  </Message>
+                </Row>
+              ) : booking.isPaid ? (
+                <Row className='mt-2'>
+                  <strong className='fs-4'>Write A Review</strong>
+                  {errorAccomodationReview && (
+                    <Message variant='danger'>
+                      {errorAccomodationReview}
+                    </Message>
+                  )}
+                  <Form onSubmit={submitReviewHandler}>
+                    <Form.Group>
+                      <Form.Label>Rating</Form.Label>
+                      <Form.Control
+                        as='select'
+                        value={rating}
+                        onChange={(e) => setRating(e.target.value)}
+                      >
+                        <option value='0'>Select...</option>
+                        <option value='1'>1 - Poor</option>
+                        <option value='2'>2 - Fair</option>
+                        <option value='3'>3 - Good</option>
+                        <option value='4'>4 - Very Good</option>
+                        <option value='5'>5 - Excellent</option>
+                      </Form.Control>
+                    </Form.Group>
+                    <Form.Group controlId='comment'>
+                      <Form.Label>Comment</Form.Label>
+                      <Form.Control
+                        as='textarea'
+                        row='3'
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                      />
+                    </Form.Group>
+                    <Button
+                      type='submit'
+                      variant='primary'
+                      disabled={rating === 0 || comment.trim() === ''}
+                      className='mt-2'
+                    >
+                      Submit
+                    </Button>
+                  </Form>
+                </Row>
+              ) : null}
             </Col>
             <Col md={8}>
               <Accomodation accomodation={booking.accomodation} />

@@ -1,5 +1,7 @@
 import asyncHandler from 'express-async-handler';
+import mongoose from 'mongoose';
 import Booking from '../models/bookingModel.js';
+import Accomodation from '../models/accomodationModel.js';
 
 // @desc    Create new booking
 // @route   POST /api/bookings
@@ -93,10 +95,63 @@ const getBookings = asyncHandler(async (req, res) => {
   res.json(bookings);
 });
 
+// @desc    Create new review
+// @route   POST /api/bookings/:id/review
+// @access  Private
+const createReview = asyncHandler(async (req, res) => {
+  const booking = await Booking.findById(req.params.id).populate(
+    'accomodation',
+    '_id'
+  );
+  const accomodation = await Accomodation.findById(booking.accomodation._id);
+
+  if (booking && accomodation) {
+    if (!booking.isReviewed) {
+      const { rating, comment } = req.body;
+
+      const review = {
+        rating: Number(rating),
+        comment,
+        user: req.user._id,
+      };
+
+      accomodation.reviews.push(review);
+      accomodation.numReviews = accomodation.reviews.length;
+      accomodation.rating = (
+        accomodation.reviews.reduce((acc, item) => item.rating + acc, 0) /
+        accomodation.reviews.length
+      ).toFixed(1);
+      booking.isReviewed = true;
+
+      await accomodation.save();
+      await booking.save();
+      res.status(201).json({ message: 'Review added' });
+    }
+  } else {
+    res.status(404);
+    throw new Error('Booking not found');
+  }
+});
+
+// @desc    Get bookings for the owner's accomodations
+// @route   GET /api/bookings/owner
+// @access  Private
+const getOwnerBookings = asyncHandler(async (req, res) => {
+  console.log(req.user._id);
+  const obj = mongoose.Types.ObjectId(req.user.id);
+  const accomodations = await Accomodation.find({ host: obj });
+  const bookings = await Booking.find({
+    accomodation: { $in: accomodations },
+  }).populate('accomodation', 'name');
+  res.json(bookings);
+});
+
 export {
   createBooking,
   getBookingById,
   updateBookingToPaid,
   getMyBookings,
   getBookings,
+  createReview,
+  getOwnerBookings,
 };
