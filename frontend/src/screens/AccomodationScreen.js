@@ -180,7 +180,9 @@ const AccomodationScreen = ({ match }) => {
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  {toDate < fromDate || accomodation.host === userInfo._id ? (
+                  {toDate < fromDate ||
+                  !userInfo ||
+                  accomodation.host === userInfo._id ? (
                     <div className='d-grid gap-2'>
                       <Button variant='primary' disabled>
                         Reserve

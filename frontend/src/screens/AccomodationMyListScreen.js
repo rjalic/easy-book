@@ -90,7 +90,12 @@ const AccomodationMyListScreen = ({ history, match }) => {
           <h1>Accomodations</h1>
         </Col>
         <Col className='text-end'>
-          <Button className='my-3' onClick={createAccomodationHandler}>
+          <LinkContainer to='/myBookings'>
+            <Button>
+              <i className='fas fa-bed' /> Bookings
+            </Button>
+          </LinkContainer>
+          <Button className='my-3 mx-1' onClick={createAccomodationHandler}>
             <i className='fas fa-plus'></i> Create Accomodation
           </Button>
         </Col>
