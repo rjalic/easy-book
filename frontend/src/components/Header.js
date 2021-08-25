@@ -24,7 +24,7 @@ const Header = ({ history }) => {
           <Navbar.Toggle aria-controls='basic-navbar-nav' />
           <Navbar.Collapse id='basic-navbar-nav'>
             <Nav className='ms-auto'>
-              <LinkContainer to='/'>
+              <LinkContainer to='/' exact={true}>
                 <Nav.Link>
                   <i className='fas fa-home' /> Home
                 </Nav.Link>
@@ -32,7 +32,7 @@ const Header = ({ history }) => {
               {userInfo && !userInfo.isAdmin && (
                 <LinkContainer to='/myAccomodations'>
                   <Nav.Link>
-                    <i className='fas fa-bed' /> Accommodations
+                    <i className='fas fa-bed' /> Dashboard
                   </Nav.Link>
                 </LinkContainer>
               )}

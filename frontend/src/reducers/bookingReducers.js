@@ -17,6 +17,10 @@ import {
   BOOKING_LIST_REQUEST,
   BOOKING_LIST_SUCCESS,
   BOOKING_LIST_FAIL,
+  BOOKING_OWNER_LIST_REQUEST,
+  BOOKING_OWNER_LIST_SUCCESS,
+  BOOKING_OWNER_LIST_FAIL,
+  BOOKING_OWNER_LIST_RESET,
 } from '../constants/bookingConstants';
 
 export const bookingPaymentMethodReducer = (state = {}, action) => {
@@ -95,6 +99,21 @@ export const bookingListReducer = (state = { bookings: [] }, action) => {
       return { loading: false, bookings: action.payload };
     case BOOKING_LIST_FAIL:
       return { loading: false, error: action.payload };
+    default:
+      return state;
+  }
+};
+
+export const bookingOwnerListReducer = (state = { bookings: [] }, action) => {
+  switch (action.type) {
+    case BOOKING_OWNER_LIST_REQUEST:
+      return { loading: true };
+    case BOOKING_OWNER_LIST_SUCCESS:
+      return { loading: false, bookings: action.payload };
+    case BOOKING_OWNER_LIST_FAIL:
+      return { loading: false, error: action.payload };
+    case BOOKING_OWNER_LIST_RESET:
+      return { bookings: [] };
     default:
       return state;
   }

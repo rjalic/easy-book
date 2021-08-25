@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import Booking from '../models/bookingModel.js';
 
 const reviewSchema = mongoose.Schema(
   {
@@ -81,6 +82,17 @@ const accomodationSchema = mongoose.Schema(
     timestamps: true,
   }
 );
+
+accomodationSchema.pre('remove', async function (next) {
+  try {
+    await Booking.deleteMany({
+      accomodation: mongoose.Types.ObjectId(this._id),
+    });
+  } catch (error) {
+    console.log(error);
+  }
+  next();
+});
 
 const Accomodation = mongoose.model('Accomodation', accomodationSchema);
 

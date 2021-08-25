@@ -41,6 +41,10 @@ const bookingSchema = mongoose.Schema(
     bookedTo: {
       type: Date,
     },
+    isReviewed: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,

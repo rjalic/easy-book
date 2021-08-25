@@ -90,7 +90,12 @@ const AccomodationMyListScreen = ({ history, match }) => {
           <h1>Accomodations</h1>
         </Col>
         <Col className='text-end'>
-          <Button className='my-3' onClick={createAccomodationHandler}>
+          <LinkContainer to='/myBookings'>
+            <Button>
+              <i className='fas fa-bed' /> Bookings
+            </Button>
+          </LinkContainer>
+          <Button className='my-3 mx-1' onClick={createAccomodationHandler}>
             <i className='fas fa-plus'></i> Create Accomodation
           </Button>
         </Col>
@@ -103,7 +108,7 @@ const AccomodationMyListScreen = ({ history, match }) => {
         <Loader />
       ) : error ? (
         <Message variant='danger'>{error}</Message>
-      ) : accomodations ? (
+      ) : accomodations.length === 0 ? (
         <NotFound
           message={`Looks like you have no accommodations listed... Create one!`}
         />

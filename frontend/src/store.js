@@ -26,6 +26,7 @@ import {
   bookingPayReducer,
   bookingMyListReducer,
   bookingListReducer,
+  bookingOwnerListReducer,
 } from './reducers/bookingReducers';
 import {
   amenityCreateReducer,
@@ -54,6 +55,7 @@ const reducer = combineReducers({
   bookingPay: bookingPayReducer,
   bookingMyList: bookingMyListReducer,
   bookingList: bookingListReducer,
+  bookingOwnerList: bookingOwnerListReducer,
   amenityList: amenityListReducer,
   amenityCreate: amenityCreateReducer,
   amenityDelete: amenityDeleteReducer,

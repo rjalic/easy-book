@@ -1,24 +1,26 @@
 import React, { useEffect } from 'react';
-import { Table } from 'react-bootstrap';
+import { Row, Col, Button, Table } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { LinkContainer } from 'react-router-bootstrap';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { listBookings } from '../actions/bookingActions';
+import { listOwnerBookings } from '../actions/bookingActions';
 import { DateHelper } from '../utils/dateUtils';
+import NotFound from '../components/NotFound';
 
-const BookingListScreen = ({ history }) => {
+const BookingOwnerListScreen = ({ history }) => {
   const dispatch = useDispatch();
 
-  const bookingList = useSelector((state) => state.bookingList);
-  const { loading, error, bookings } = bookingList;
+  const bookingOwnerList = useSelector((state) => state.bookingOwnerList);
+  const { loading, error, bookings } = bookingOwnerList;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
   useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
-      dispatch(listBookings());
+    if (userInfo) {
+      dispatch(listOwnerBookings());
     } else {
       history.push('/login');
     }
@@ -26,11 +28,24 @@ const BookingListScreen = ({ history }) => {
 
   return (
     <>
-      <h1>Bookings</h1>
+      <Row className='align-items-center'>
+        <Col>
+          <h1>Bookings</h1>
+        </Col>
+        <Col className='text-end'>
+          <LinkContainer to='/myaccomodations' className='my-3'>
+            <Button>
+              <i className='fas fa-bed' /> Accommodations
+            </Button>
+          </LinkContainer>
+        </Col>
+      </Row>
       {loading ? (
         <Loader />
       ) : error ? (
         <Message variant='danger'>{error}</Message>
+      ) : bookings.length === 0 ? (
+        <NotFound message={`Looks like you have no bookings yet...`} />
       ) : (
         <Table striped bordered hover responsive className='table-sm'>
           <thead>
@@ -74,7 +89,7 @@ const BookingListScreen = ({ history }) => {
                   </a>
                   <Link
                     to={`/bookings/${booking._id}`}
-                    className='btn btn-primary btn-sm'
+                    className='btn btn-primary btn-sm m-1'
                   >
                     <i
                       className='fas fa-angle-right'
@@ -95,4 +110,4 @@ const BookingListScreen = ({ history }) => {
   );
 };
 
-export default BookingListScreen;
+export default BookingOwnerListScreen;

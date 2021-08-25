@@ -31,6 +31,9 @@ const AccomodationEditScreen = ({ match, history }) => {
 
   const dispatch = useDispatch();
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   const accomodationDetails = useSelector((state) => state.accomodationDetails);
   const { loading, error, accomodation } = accomodationDetails;
 
@@ -49,10 +52,18 @@ const AccomodationEditScreen = ({ match, history }) => {
   } = accomodationUpdate;
 
   useEffect(() => {
+    if (!userInfo) {
+      history.push('/');
+    }
+
     if (successUpdate) {
       dispatch({ type: ACCOMODATION_UPDATE_RESET });
       dispatch({ type: ACCOMODATION_DETAILS_RESET });
-      history.push('/accomodationList');
+      if (userInfo.isAdmin) {
+        history.push('/admin/accomodationList');
+      } else {
+        history.push('/myAccomodations');
+      }
     } else {
       if (!accomodation.name || accomodation._id !== accomodationId) {
         dispatch({ type: ACCOMODATION_UPDATE_RESET });
@@ -76,6 +87,7 @@ const AccomodationEditScreen = ({ match, history }) => {
     history,
     successUpdate,
     amenities,
+    userInfo,
   ]);
 
   const uploadFileHandler = async (e) => {
@@ -121,7 +133,10 @@ const AccomodationEditScreen = ({ match, history }) => {
 
   return (
     <>
-      <Link to='/accomodationList' className='btn btn-light my-3'>
+      <Link
+        to={userInfo.isAdmin ? '/admin/accomodationList' : '/myAccomodations'}
+        className='btn btn-light my-3'
+      >
         Go Back
       </Link>
       <FormContainer>

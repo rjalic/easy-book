@@ -10,12 +10,12 @@ export class DateHelper {
 
   static normalizeDate = (date) => {
     let dateObject = new Date(date);
-    dateObject.setHours(0, 0, 0, 0);
+    dateObject.setMinutes(0, 0, 0);
     return dateObject.toISOString();
   };
 
   static toIsoDate = (date) => {
-    const dateObject = new Date(date);
+    let dateObject = new Date(date);
     return dateObject.toISOString().split('T')[0];
   };
 
