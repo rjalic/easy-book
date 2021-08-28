@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Form, Button, Row, Col } from 'react-bootstrap';
-import DatePicker from 'react-datepicker';
-import { DateHelper } from '../utils/dateUtils';
 
 const SearchBar = ({ history }) => {
   const [keyword, setKeyword] = useState('');
@@ -11,8 +9,6 @@ const SearchBar = ({ history }) => {
   const [city, setCity] = useState('');
   const [country, setCountry] = useState('');
   const [rating, setRating] = useState(0);
-  const [fromDate, setFromDate] = useState(new Date(DateHelper.today()));
-  const [toDate, setToDate] = useState(new Date(DateHelper.tomorrow()));
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -45,8 +41,6 @@ const SearchBar = ({ history }) => {
       history.push('/');
     }
   };
-
-  useEffect(() => {}, [fromDate, toDate]);
 
   return (
     <Form onSubmit={submitHandler} inline>
@@ -98,35 +92,6 @@ const SearchBar = ({ history }) => {
           </Row>
         </Form.Group>
       </Row>
-      {/* <Form.Group>
-        <Form.Label>Date Range</Form.Label>
-        <Row>
-          <Col>
-            <DatePicker
-              selected={fromDate}
-              onChange={(date) =>
-                setFromDate(new Date(DateHelper.normalizeDate(date)))
-              }
-              selectsStart
-              startDate={fromDate}
-              endDate={toDate}
-              minDate={Date.now()}
-            />
-          </Col>
-          <Col>
-            <DatePicker
-              selected={toDate}
-              onChange={(date) =>
-                setToDate(new Date(DateHelper.normalizeDate(date)))
-              }
-              selectsEnd
-              startDate={fromDate}
-              endDate={toDate}
-              minDate={new Date(DateHelper.addDays(fromDate, 1))}
-            />
-          </Col>
-        </Row>
-      </Form.Group> */}
       <Form.Group>
         <Form.Label>City</Form.Label>
         <Form.Control
@@ -158,27 +123,6 @@ const SearchBar = ({ history }) => {
           min='0'
         />
       </Form.Group>
-      {/* <Form.Group>
-        <Form.Label>Sort by price</Form.Label>
-        <Form.Control
-          type='text'
-          name='country'
-          onChange={(e) => setCountry(e.target.value)}
-          placeholder='Search by country'
-          className='mr-sm-2 ml-sm-5'
-        />
-      </Form.Group>
-      <Form.Group>
-        <Form.Label>Sort by rating</Form.Label>
-        <Form.Control
-          type='text'
-          name='country'
-          onChange={(e) => setCountry(e.target.value)}
-          placeholder='Search by country'
-          className='mr-sm-2 ml-sm-5'
-        />
-      </Form.Group> */}
-
       <div className='d-grid gap-2 mt-2'>
         <Button type='submit' variant='primary' className='p-2'>
           Filter

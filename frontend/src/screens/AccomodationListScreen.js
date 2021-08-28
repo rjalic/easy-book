@@ -86,11 +86,11 @@ const AccomodationListScreen = ({ history }) => {
     <>
       <Row className='align-items-center'>
         <Col>
-          <h1>Accomodations</h1>
+          <h1>Accommodations</h1>
         </Col>
         <Col className='text-end'>
           <Button className='my-3' onClick={createAccomodationHandler}>
-            <i className='fas fa-plus'></i> Create Accomodation
+            <i className='fas fa-plus'></i> Create Accommodation
           </Button>
         </Col>
       </Row>

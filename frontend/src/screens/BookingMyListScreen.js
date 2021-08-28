@@ -52,7 +52,7 @@ const BookingOwnerListScreen = ({ history }) => {
             <tr>
               <th>ID</th>
               <th>USER</th>
-              <th>ACCOMODATION</th>
+              <th>ACCOMMODATION</th>
               <th>TOTAL PRICE</th>
               <th>PAID</th>
               <th>FROM</th>
