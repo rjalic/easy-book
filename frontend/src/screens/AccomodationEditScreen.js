@@ -140,7 +140,7 @@ const AccomodationEditScreen = ({ match, history }) => {
         Go Back
       </Link>
       <FormContainer>
-        <h1>Edit Accomodation</h1>
+        <h1>Edit Accommodation</h1>
         {loadingUpdate && <Loader />}
         {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
         {loading || amenityLoading ? (

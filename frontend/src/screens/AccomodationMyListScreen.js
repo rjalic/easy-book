@@ -87,7 +87,7 @@ const AccomodationMyListScreen = ({ history, match }) => {
     <>
       <Row className='align-items-center'>
         <Col>
-          <h1>Accomodations</h1>
+          <h1>Accommodations</h1>
         </Col>
         <Col className='text-end'>
           <LinkContainer to='/myBookings'>
@@ -96,7 +96,7 @@ const AccomodationMyListScreen = ({ history, match }) => {
             </Button>
           </LinkContainer>
           <Button className='my-3 mx-1' onClick={createAccomodationHandler}>
-            <i className='fas fa-plus'></i> Create Accomodation
+            <i className='fas fa-plus'></i> Create Accommodation
           </Button>
         </Col>
       </Row>
