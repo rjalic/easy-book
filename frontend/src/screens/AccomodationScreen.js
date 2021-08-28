@@ -4,27 +4,25 @@ import { Row, Col, Image, ListGroup, Button } from 'react-bootstrap';
 import Rating from '../components/Rating';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import DatePicker from 'react-datepicker';
-import { listAccomodationDetails } from '../actions/accomodationActions';
+import {
+  getTakenDates,
+  listAccomodationDetails,
+} from '../actions/accomodationActions';
 import { DateHelper } from '../utils/dateUtils';
 import { LinkContainer } from 'react-router-bootstrap';
+import { DateRange } from 'react-date-range';
 
 const AccomodationScreen = ({ match }) => {
-  const [fromDate, setFromDate] = useState(new Date(DateHelper.today()));
-  const [toDate, setToDate] = useState(new Date(DateHelper.tomorrow()));
+  const [isValidRange, setValidRange] = useState(false);
+  const [value, setValue] = useState([
+    {
+      startDate: new Date(),
+      endDate: new Date(),
+      key: 'selection',
+    },
+  ]);
 
   const dispatch = useDispatch();
-
-  const excluded = [
-    '2021-08-31',
-    '2021-09-01',
-    '2021-09-02',
-    '2021-08-23',
-    '2021-08-24',
-    '2021-08-25',
-    '2021-08-26',
-  ];
-  const dates = excluded.map((e) => Date.parse(e));
 
   const accomodationDetails = useSelector((state) => state.accomodationDetails);
   const { loading, error, accomodation } = accomodationDetails;
@@ -32,9 +30,27 @@ const AccomodationScreen = ({ match }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
+  const accommodationTaken = useSelector((state) => state.accommodationTaken);
+  const { taken } = accommodationTaken;
+
   useEffect(() => {
-    dispatch(listAccomodationDetails(match.params.id, true));
-  }, [dispatch, match, fromDate, toDate]);
+    if (!accomodation.name) {
+      dispatch(listAccomodationDetails(match.params.id, true));
+      dispatch(getTakenDates(match.params.id));
+    }
+    if (
+      new Date(value[0].startDate).getFullYear() ===
+        new Date(value[0].endDate).getFullYear() &&
+      new Date(value[0].startDate).getMonth() ===
+        new Date(value[0].endDate).getMonth() &&
+      new Date(value[0].startDate).getDate() ===
+        new Date(value[0].endDate).getDate()
+    ) {
+      setValidRange(false);
+    } else {
+      setValidRange(true);
+    }
+  }, [dispatch, match, value, accomodation.name]);
 
   return (
     <>
@@ -95,42 +111,22 @@ const AccomodationScreen = ({ match }) => {
                 <ListGroup.Item>
                   <Row>
                     <Col>
-                      <Row className='px-3 pb-1'>
-                        <h6 className='px-0 mt-1 mb-0'>From</h6>
-                      </Row>
-                      <Row className='mb-2'>
-                        <DatePicker
-                          selected={fromDate}
-                          onChange={(date) =>
-                            setFromDate(
-                              new Date(DateHelper.normalizeDate(date))
-                            )
-                          }
-                          selectsStart
-                          startDate={fromDate}
-                          endDate={toDate}
-                          minDate={Date.now()}
-                          excludeDates={dates}
-                        />
-                      </Row>
+                      <h6 className='px-0 mt-1'>Date range</h6>
                     </Col>
                     <Col>
-                      <Row className='px-3 pb-1'>
-                        <h6 className='px-0 mt-1 mb-0'>To</h6>
-                      </Row>
-                      <Row>
-                        <DatePicker
-                          selected={toDate}
-                          onChange={(date) =>
-                            setToDate(new Date(DateHelper.normalizeDate(date)))
-                          }
-                          selectsEnd
-                          startDate={fromDate}
-                          endDate={toDate}
-                          minDate={new Date(DateHelper.addDays(fromDate, 1))}
-                          excludeDates={dates}
-                        />
-                      </Row>
+                      <DateRange
+                        // editableDateInputs={true}
+                        onChange={(item) => setValue([item.selection])}
+                        moveRangeOnFirstSelection={false}
+                        ranges={value}
+                        minDate={new Date()}
+                        disabledDates={taken.map(
+                          (d) => new Date(Date.parse(d))
+                        )}
+                        weekStartsOn={1}
+                        // months={2}
+                        // direction={'horizontal'}
+                      />
                     </Col>
                   </Row>
                 </ListGroup.Item>
@@ -180,10 +176,10 @@ const AccomodationScreen = ({ match }) => {
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  {toDate < fromDate ||
+                  {!isValidRange ||
                   !userInfo ||
                   accomodation.host === userInfo._id ? (
-                    <div className='d-grid gap-2'>
+                    <div className='d-grid gap-2 mt-2'>
                       <Button variant='primary' disabled>
                         Reserve
                       </Button>
@@ -192,9 +188,7 @@ const AccomodationScreen = ({ match }) => {
                     <LinkContainer
                       to={`/accomodations/${
                         accomodation._id
-                      }/book?from=${DateHelper.toIsoDate(
-                        fromDate
-                      )}&to=${DateHelper.toIsoDate(toDate)}`}
+                      }/book?from=${value[0].startDate.toISOString()}&to=${value[0].endDate.toISOString()}`}
                     >
                       <div className='d-grid gap-2 mt-2'>
                         <Button variant='primary'>Reserve</Button>

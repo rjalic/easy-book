@@ -22,6 +22,9 @@ import {
   ACCOMODATION_MY_LIST_REQUEST,
   ACCOMODATION_MY_LIST_SUCCESS,
   ACCOMODATION_MY_LIST_FAIL,
+  ACCOMMODATION_TAKEN_REQUEST,
+  ACCOMMODATION_TAKEN_SUCCESS,
+  ACCOMMODATION_TAKEN_FAIL,
 } from '../constants/accomodationConstants';
 
 export const listAccomodations =
@@ -239,3 +242,21 @@ export const createAccomodationReview =
       });
     }
   };
+
+export const getTakenDates = (id) => async (dispatch) => {
+  try {
+    dispatch({ type: ACCOMMODATION_TAKEN_REQUEST });
+
+    const { data } = await axios.get(`/api/accomodations/${id}/taken`);
+
+    dispatch({ type: ACCOMMODATION_TAKEN_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: ACCOMMODATION_TAKEN_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
