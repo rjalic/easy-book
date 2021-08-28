@@ -86,7 +86,6 @@ const AccomodationEditScreen = ({ match, history }) => {
     accomodation,
     history,
     successUpdate,
-    amenities,
     userInfo,
   ]);
 
