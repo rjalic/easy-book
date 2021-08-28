@@ -25,6 +25,9 @@ import {
   ACCOMODATION_MY_LIST_REQUEST,
   ACCOMODATION_MY_LIST_SUCCESS,
   ACCOMODATION_MY_LIST_FAIL,
+  ACCOMMODATION_TAKEN_REQUEST,
+  ACCOMMODATION_TAKEN_SUCCESS,
+  ACCOMMODATION_TAKEN_FAIL,
 } from '../constants/accomodationConstants';
 
 export const accomodationListReducer = (
@@ -151,6 +154,19 @@ export const accomodationCreateReviewReducer = (state = {}, action) => {
       return { loading: false, error: action.payload };
     case ACCOMODATION_CREATE_REVIEW_RESET:
       return {};
+    default:
+      return state;
+  }
+};
+
+export const accommodationTakenReducer = (state = { taken: [] }, action) => {
+  switch (action.type) {
+    case ACCOMMODATION_TAKEN_REQUEST:
+      return { loading: true, taken: [] };
+    case ACCOMMODATION_TAKEN_SUCCESS:
+      return { loading: false, taken: action.payload };
+    case ACCOMMODATION_TAKEN_FAIL:
+      return { loading: false, error: action.payload };
     default:
       return state;
   }
