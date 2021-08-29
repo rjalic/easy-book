@@ -63,7 +63,8 @@ const PaymentScreen = ({ match, history }) => {
       booking &&
       booking.user &&
       booking.user._id !== userInfo._id &&
-      !userInfo.isAdmin
+      !userInfo.isAdmin &&
+      userInfo._id !== booking.accomodation.host
     ) {
       history.push('/');
     } else if (!booking.isPaid) {
