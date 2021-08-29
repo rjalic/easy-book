@@ -196,7 +196,7 @@ const getTakenDates = asyncHandler(async (req, res) => {
         ) {
           break;
         } else {
-          dates = dates.add(new Date(temp).toISOString().split('T')[0]);
+          dates = dates.add(new Date(temp).toISOString());
           temp.setDate(temp.getDate() + 1);
         }
       }
