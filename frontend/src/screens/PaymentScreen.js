@@ -56,7 +56,7 @@ const PaymentScreen = ({ match }) => {
       booking.isReviewed = true;
     }
 
-    if (!booking || successPay) {
+    if (!booking || successPay || booking._id !== match.params.id) {
       dispatch({ type: BOOKING_PAY_RESET });
       dispatch(getBookingDetails(bookingId));
     } else if (!booking.isPaid) {
@@ -66,7 +66,14 @@ const PaymentScreen = ({ match }) => {
         setSdkReady(true);
       }
     }
-  }, [dispatch, bookingId, booking, successPay, successAccomodationReview]);
+  }, [
+    dispatch,
+    bookingId,
+    booking,
+    successPay,
+    successAccomodationReview,
+    match,
+  ]);
 
   const successPaymentHandler = (paymentResult) => {
     console.log(paymentResult);
