@@ -6,6 +6,7 @@ import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { listBookings } from '../actions/bookingActions';
 import { DateHelper } from '../utils/dateUtils';
+import NotFound from '../components/NotFound';
 
 const BookingListScreen = ({ history }) => {
   const dispatch = useDispatch();
@@ -31,6 +32,8 @@ const BookingListScreen = ({ history }) => {
         <Loader />
       ) : error ? (
         <Message variant='danger'>{error}</Message>
+      ) : bookings.length === 0 ? (
+        <NotFound message={`Looks like there's no bookings yet...`} />
       ) : (
         <Table striped bordered hover responsive className='table-sm'>
           <thead>
