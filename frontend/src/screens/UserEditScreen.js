@@ -20,6 +20,9 @@ const UserEditScreen = ({ match, history }) => {
 
   const dispatch = useDispatch();
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   const userDetails = useSelector((state) => state.userDetails);
   const { loading, error, user } = userDetails;
 
@@ -31,7 +34,11 @@ const UserEditScreen = ({ match, history }) => {
   } = userUpdate;
 
   useEffect(() => {
-    if (successUpdate) {
+    if (!userInfo) {
+      history.push('/login');
+    } else if (!userInfo.isAdmin) {
+      history.push('/');
+    } else if (successUpdate) {
       dispatch({ type: USER_UPDATE_RESET });
       dispatch({ type: USER_DETAILS_RESET });
       history.push('/admin/userList');
@@ -44,7 +51,7 @@ const UserEditScreen = ({ match, history }) => {
         setIsAdmin(user.isAdmin);
       }
     }
-  }, [dispatch, userId, user, successUpdate, history]);
+  }, [dispatch, userId, user, successUpdate, history, userInfo]);
 
   const submitHandler = (e) => {
     e.preventDefault();

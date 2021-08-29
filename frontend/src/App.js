@@ -40,7 +40,7 @@ const App = () => {
           <Route path='/myBookings' component={BookingOwnerListScreen} />
           <Route path='/admin/user/:id/edit' component={UserEditScreen} />
           <Route
-            path='/accomodation/:id/edit'
+            path='/accomodations/:id/edit'
             component={AccomodationEditScreen}
           />
           <Route

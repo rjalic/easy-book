@@ -7,8 +7,9 @@ import Loader from '../components/Loader';
 import { getUserDetails, updateUserProfile } from '../actions/userActions';
 import { listMyBookings } from '../actions/bookingActions';
 import NotFound from '../components/NotFound';
+import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants';
 
-const ProfileScreen = ({ location, history }) => {
+const ProfileScreen = ({ history }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -20,7 +21,7 @@ const ProfileScreen = ({ location, history }) => {
   const userDetails = useSelector((state) => state.userDetails);
   const { loading, error, user } = userDetails;
 
-  const userLogin = useSelector((state) => state.userDetails);
+  const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
   const userUpdateProfile = useSelector((state) => state.userUpdateProfile);
@@ -34,10 +35,11 @@ const ProfileScreen = ({ location, history }) => {
   } = bookingMyList;
 
   useEffect(() => {
-    if (userInfo) {
+    if (!userInfo) {
       history.push('/login');
     } else {
-      if (!user.name) {
+      if (!user || !user.name || success) {
+        dispatch({ type: USER_UPDATE_PROFILE_RESET });
         dispatch(getUserDetails('profile'));
         dispatch(listMyBookings());
       } else {
@@ -45,7 +47,7 @@ const ProfileScreen = ({ location, history }) => {
         setEmail(user.email);
       }
     }
-  }, [dispatch, history, userInfo, user]);
+  }, [dispatch, history, userInfo, user, success]);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -125,7 +127,7 @@ const ProfileScreen = ({ location, history }) => {
           <Table striped bordered hover responsive className='table-sm'>
             <thead>
               <tr>
-                <th>ID</th>
+                <th>NAME</th>
                 <th>FROM</th>
                 <th>TO</th>
                 <th>TOTAL</th>
@@ -136,13 +138,13 @@ const ProfileScreen = ({ location, history }) => {
             <tbody>
               {bookings.map((booking) => (
                 <tr key={booking._id}>
-                  <td>{booking._id}</td>
-                  <td>{booking.bookedFrom.substring(0, 10)}</td>
-                  <td>{booking.bookedTo.substring(0, 10)}</td>
+                  <td>{booking.accomodation.name}</td>
+                  <td>{new Date(booking.bookedFrom).toDateString()}</td>
+                  <td>{new Date(booking.bookedTo).toDateString()}</td>
                   <td>${booking.totalPrice}</td>
                   <td>
                     {booking.isPaid ? (
-                      booking.paidAt.substring(0, 10)
+                      new Date(booking.paidAt).toDateString()
                     ) : (
                       <i className='fas fa-times' style={{ color: 'red' }}></i>
                     )}

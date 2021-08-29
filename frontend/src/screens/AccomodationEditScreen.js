@@ -53,10 +53,8 @@ const AccomodationEditScreen = ({ match, history }) => {
 
   useEffect(() => {
     if (!userInfo) {
-      history.push('/');
-    }
-
-    if (successUpdate) {
+      history.push('/login');
+    } else if (successUpdate) {
       dispatch({ type: ACCOMODATION_UPDATE_RESET });
       dispatch({ type: ACCOMODATION_DETAILS_RESET });
       if (userInfo.isAdmin) {
@@ -69,6 +67,12 @@ const AccomodationEditScreen = ({ match, history }) => {
         dispatch({ type: ACCOMODATION_UPDATE_RESET });
         dispatch(listAccomodationDetails(accomodationId));
         dispatch(listAmenities());
+      } else if (
+        accomodation &&
+        accomodation.host !== userInfo._id &&
+        !userInfo.isAdmin
+      ) {
+        history.push('/');
       } else {
         setName(accomodation.name);
         setImage(accomodation.image);
@@ -133,7 +137,11 @@ const AccomodationEditScreen = ({ match, history }) => {
   return (
     <>
       <Link
-        to={userInfo.isAdmin ? '/admin/accomodationList' : '/myAccomodations'}
+        to={
+          userInfo && userInfo.isAdmin
+            ? '/admin/accomodationList'
+            : '/myAccomodations'
+        }
         className='btn btn-light my-3'
       >
         Go Back

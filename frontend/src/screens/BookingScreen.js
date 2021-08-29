@@ -39,19 +39,22 @@ const BookingScreen = ({ history, match, location }) => {
   const accomodationDetails = useSelector((state) => state.accomodationDetails);
   const { loading, error, accomodation } = accomodationDetails;
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   useEffect(() => {
-    if (bookingSuccess) {
+    if (!userInfo) {
+      history.push('/login');
+    } else if (bookingSuccess) {
       history.push(`/bookings/${booking._id}`);
     } else if (totalPrice === 0) {
       let query = location.search.slice(1).split('&');
-
       setBookedFrom(
         new Date(DateHelper.normalizeDate(new Date(query[0].split('=')[1])))
       );
       setBookedTo(
         new Date(DateHelper.normalizeDate(new Date(query[1].split('=')[1])))
       );
-
       setTotalPrice(
         accomodation.price * DateHelper.daysBetween(bookedFrom, bookedTo)
       );
@@ -65,6 +68,7 @@ const BookingScreen = ({ history, match, location }) => {
     history,
     bookingSuccess,
     location.search,
+    userInfo,
   ]);
 
   return (

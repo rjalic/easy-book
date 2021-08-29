@@ -188,7 +188,9 @@ const AccomodationScreen = ({ match }) => {
                     <LinkContainer
                       to={`/accomodations/${
                         accomodation._id
-                      }/book?from=${value[0].startDate.toISOString()}&to=${value[0].endDate.toISOString()}`}
+                      }/book?from=${DateHelper.toIsoDate(
+                        value[0].startDate
+                      )}&to=${DateHelper.toIsoDate(value[0].endDate)}`}
                     >
                       <div className='d-grid gap-2 mt-2'>
                         <Button variant='primary'>Reserve</Button>

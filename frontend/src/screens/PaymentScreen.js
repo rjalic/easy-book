@@ -12,7 +12,7 @@ import { DateHelper } from '../utils/dateUtils';
 import { BOOKING_PAY_RESET } from '../constants/bookingConstants';
 import Message from '../components/Message';
 
-const PaymentScreen = ({ match }) => {
+const PaymentScreen = ({ match, history }) => {
   const bookingId = match.params.id;
 
   const [sdkReady, setSdkReady] = useState(false);
@@ -26,6 +26,9 @@ const PaymentScreen = ({ match }) => {
 
   const bookingPay = useSelector((state) => state.bookingPay);
   const { loading: loadingPay, success: successPay } = bookingPay;
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
 
   const accomodationCreateReview = useSelector(
     (state) => state.accomodationCreateReview
@@ -45,17 +48,25 @@ const PaymentScreen = ({ match }) => {
       };
       document.body.appendChild(script);
     };
-    if (successAccomodationReview) {
+    if (!userInfo) {
+      history.push('/login');
+    } else if (successAccomodationReview) {
       alert('Review submitted');
       setRating(0);
       setComment('');
       dispatch({ type: ACCOMODATION_CREATE_REVIEW_RESET });
       booking.isReviewed = true;
-    }
-
-    if (!booking || successPay) {
+    } else if (!booking || successPay || booking._id !== match.params.id) {
       dispatch({ type: BOOKING_PAY_RESET });
       dispatch(getBookingDetails(bookingId));
+    } else if (
+      booking &&
+      booking.user &&
+      booking.user._id !== userInfo._id &&
+      !userInfo.isAdmin &&
+      userInfo._id !== booking.accomodation.host
+    ) {
+      history.push('/');
     } else if (!booking.isPaid) {
       if (!window.paypal) {
         addPayPalScript();
@@ -63,7 +74,16 @@ const PaymentScreen = ({ match }) => {
         setSdkReady(true);
       }
     }
-  }, [dispatch, bookingId, booking, successPay, successAccomodationReview]);
+  }, [
+    dispatch,
+    bookingId,
+    booking,
+    successPay,
+    successAccomodationReview,
+    match,
+    userInfo,
+    history,
+  ]);
 
   const successPaymentHandler = (paymentResult) => {
     console.log(paymentResult);
@@ -135,7 +155,8 @@ const PaymentScreen = ({ match }) => {
               <Row>
                 <span>{booking.paymentMethod}</span>
               </Row>
-              {!booking.isPaid ? (
+              {console.log(userInfo._id === booking.user)}
+              {!booking.isPaid && userInfo._id === booking.user._id ? (
                 <>
                   <Row className='mt-2'>
                     {loadingPay && <Loader />}
@@ -149,7 +170,7 @@ const PaymentScreen = ({ match }) => {
                     )}
                   </Row>
                 </>
-              ) : (
+              ) : booking.isPaid ? (
                 <>
                   <Row className='mt-2'>
                     <h6>Paid At</h6>
@@ -158,14 +179,23 @@ const PaymentScreen = ({ match }) => {
                     <span>{new Date(booking.paidAt).toDateString()}</span>
                   </Row>
                 </>
+              ) : (
+                <>
+                  <Row className='mt-2'>
+                    <h6>Payment Status</h6>
+                  </Row>
+                  <Row>
+                    <span>Not Paid</span>
+                  </Row>
+                </>
               )}
-              {booking.isReviewed ? (
+              {booking.isReviewed && userInfo._id === booking.user._id ? (
                 <Row className='mt-2 mx-1'>
                   <Message variant='info'>
                     You already submitted a review.
                   </Message>
                 </Row>
-              ) : booking.isPaid ? (
+              ) : booking.isPaid && userInfo._id === booking.user._id ? (
                 <Row className='mt-2'>
                   <strong className='fs-4'>Write A Review</strong>
                   {errorAccomodationReview && (

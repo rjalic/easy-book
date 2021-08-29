@@ -16,7 +16,7 @@ export class DateHelper {
 
   static toIsoDate = (date) => {
     let dateObject = new Date(date);
-    return dateObject.toISOString().split('T')[0];
+    return dateObject.toISOString();
   };
 
   static toDateString = (date) => {
