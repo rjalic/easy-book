@@ -74,15 +74,41 @@ const AccomodationScreen = ({ match }) => {
           </Row>
           <Row>
             <Col md={6}>
-              <Image
-                src={accomodation.image}
-                alt={accomodation.name}
-                fluid
-                onError={(e) => {
-                  e.target.onError = null;
-                  e.target.src = '/images/placeholder.png';
-                }}
-              />
+              <ListGroup variant='flush'>
+                <ListGroup.Item>
+                  <Image
+                    src={accomodation.image}
+                    alt={accomodation.name}
+                    fluid
+                    onError={(e) => {
+                      e.target.onError = null;
+                      e.target.src = '/images/placeholder.png';
+                    }}
+                    className='mb-3'
+                  />
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  <strong className='fs-4'>Reviews</strong>
+                  {accomodation.reviews.length === 0 && (
+                    <Message>No Reviews</Message>
+                  )}
+                  <ListGroup variant='flush'>
+                    {accomodation.reviews.map(
+                      (review) =>
+                        review.user && (
+                          <ListGroup.Item key={review._id}>
+                            <strong>
+                              {review.user ? review.user.name : 'UNKNOWN'}
+                            </strong>
+                            <Rating value={review.rating} />
+                            <p>{DateHelper.toDateString(review.createdAt)}</p>
+                            <p>{review.comment}</p>
+                          </ListGroup.Item>
+                        )
+                    )}
+                  </ListGroup>
+                </ListGroup.Item>
+              </ListGroup>
             </Col>
             <Col md={6}>
               <ListGroup variant='flush'>
@@ -203,27 +229,7 @@ const AccomodationScreen = ({ match }) => {
           </Row>
           <br />
           <Row>
-            <Col md={6}>
-              <strong className='fs-4'>Reviews</strong>
-              {accomodation.reviews.length === 0 && (
-                <Message>No Reviews</Message>
-              )}
-              <ListGroup variant='flush'>
-                {accomodation.reviews.map(
-                  (review) =>
-                    review.user && (
-                      <ListGroup.Item key={review._id}>
-                        <strong>
-                          {review.user ? review.user.name : 'UNKNOWN'}
-                        </strong>
-                        <Rating value={review.rating} />
-                        <p>{DateHelper.toDateString(review.createdAt)}</p>
-                        <p>{review.comment}</p>
-                      </ListGroup.Item>
-                    )
-                )}
-              </ListGroup>
-            </Col>
+            <Col md={6}></Col>
           </Row>
         </>
       )}
