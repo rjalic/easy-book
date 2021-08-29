@@ -27,6 +27,9 @@ const PaymentScreen = ({ match }) => {
   const bookingPay = useSelector((state) => state.bookingPay);
   const { loading: loadingPay, success: successPay } = bookingPay;
 
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
   const accomodationCreateReview = useSelector(
     (state) => state.accomodationCreateReview
   );
@@ -135,7 +138,8 @@ const PaymentScreen = ({ match }) => {
               <Row>
                 <span>{booking.paymentMethod}</span>
               </Row>
-              {!booking.isPaid ? (
+              {console.log(userInfo._id === booking.user)}
+              {!booking.isPaid && userInfo._id === booking.user._id ? (
                 <>
                   <Row className='mt-2'>
                     {loadingPay && <Loader />}
@@ -149,7 +153,7 @@ const PaymentScreen = ({ match }) => {
                     )}
                   </Row>
                 </>
-              ) : (
+              ) : booking.isPaid ? (
                 <>
                   <Row className='mt-2'>
                     <h6>Paid At</h6>
@@ -158,14 +162,23 @@ const PaymentScreen = ({ match }) => {
                     <span>{new Date(booking.paidAt).toDateString()}</span>
                   </Row>
                 </>
+              ) : (
+                <>
+                  <Row className='mt-2'>
+                    <h6>Payment Status</h6>
+                  </Row>
+                  <Row>
+                    <span>Not Paid</span>
+                  </Row>
+                </>
               )}
-              {booking.isReviewed ? (
+              {booking.isReviewed && userInfo._id === booking.user._id ? (
                 <Row className='mt-2 mx-1'>
                   <Message variant='info'>
                     You already submitted a review.
                   </Message>
                 </Row>
-              ) : booking.isPaid ? (
+              ) : booking.isPaid && userInfo._id === booking.user._id ? (
                 <Row className='mt-2'>
                   <strong className='fs-4'>Write A Review</strong>
                   {errorAccomodationReview && (
