@@ -58,7 +58,7 @@ const AccomodationListScreen = ({ history }) => {
     }
 
     if (successCreate) {
-      history.push(`/accomodation/${createdAccmodation._id}/edit`);
+      history.push(`/accomodations/${createdAccmodation._id}/edit`);
     } else {
       dispatch(listAccomodations('', pageNumber));
     }
@@ -131,7 +131,7 @@ const AccomodationListScreen = ({ history }) => {
                   <td>{accomodation.rating}</td>
                   <td>
                     <LinkContainer
-                      to={`/accomodation/${accomodation._id}/edit`}
+                      to={`/accomodations/${accomodation._id}/edit`}
                     >
                       <Button variant='light' className='btn-sm'>
                         <i className='fas fa-edit'></i>

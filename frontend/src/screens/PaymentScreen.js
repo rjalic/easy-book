@@ -12,7 +12,7 @@ import { DateHelper } from '../utils/dateUtils';
 import { BOOKING_PAY_RESET } from '../constants/bookingConstants';
 import Message from '../components/Message';
 
-const PaymentScreen = ({ match }) => {
+const PaymentScreen = ({ match, history }) => {
   const bookingId = match.params.id;
 
   const [sdkReady, setSdkReady] = useState(false);
@@ -48,17 +48,24 @@ const PaymentScreen = ({ match }) => {
       };
       document.body.appendChild(script);
     };
-    if (successAccomodationReview) {
+    if (!userInfo) {
+      history.push('/login');
+    } else if (successAccomodationReview) {
       alert('Review submitted');
       setRating(0);
       setComment('');
       dispatch({ type: ACCOMODATION_CREATE_REVIEW_RESET });
       booking.isReviewed = true;
-    }
-
-    if (!booking || successPay || booking._id !== match.params.id) {
+    } else if (!booking || successPay || booking._id !== match.params.id) {
       dispatch({ type: BOOKING_PAY_RESET });
       dispatch(getBookingDetails(bookingId));
+    } else if (
+      booking &&
+      booking.user &&
+      booking.user._id !== userInfo._id &&
+      !userInfo.isAdmin
+    ) {
+      history.push('/');
     } else if (!booking.isPaid) {
       if (!window.paypal) {
         addPayPalScript();
@@ -73,6 +80,8 @@ const PaymentScreen = ({ match }) => {
     successPay,
     successAccomodationReview,
     match,
+    userInfo,
+    history,
   ]);
 
   const successPaymentHandler = (paymentResult) => {
