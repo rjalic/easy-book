@@ -127,7 +127,7 @@ const ProfileScreen = ({ history }) => {
           <Table striped bordered hover responsive className='table-sm'>
             <thead>
               <tr>
-                <th>ID</th>
+                <th>NAME</th>
                 <th>FROM</th>
                 <th>TO</th>
                 <th>TOTAL</th>
@@ -138,13 +138,13 @@ const ProfileScreen = ({ history }) => {
             <tbody>
               {bookings.map((booking) => (
                 <tr key={booking._id}>
-                  <td>{booking._id}</td>
-                  <td>{booking.bookedFrom.substring(0, 10)}</td>
-                  <td>{booking.bookedTo.substring(0, 10)}</td>
+                  <td>{booking.accomodation.name}</td>
+                  <td>{new Date(booking.bookedFrom).toDateString()}</td>
+                  <td>{new Date(booking.bookedTo).toDateString()}</td>
                   <td>${booking.totalPrice}</td>
                   <td>
                     {booking.isPaid ? (
-                      booking.paidAt.substring(0, 10)
+                      new Date(booking.paidAt).toDateString()
                     ) : (
                       <i className='fas fa-times' style={{ color: 'red' }}></i>
                     )}
