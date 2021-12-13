@@ -45,6 +45,13 @@ const SearchBar = ({ history }) => {
   return (
     <Form onSubmit={submitHandler} inline>
       <Form.Group>
+        <Form.Label>
+          <span className='fs-4'>
+            <i className='fas fa-sort-down' /> Filters
+          </span>
+        </Form.Label>
+      </Form.Group>
+      <Form.Group>
         <Form.Label>Name</Form.Label>
         <Form.Control
           type='text'
