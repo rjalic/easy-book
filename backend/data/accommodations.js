@@ -1,4 +1,4 @@
-const accomodations = [
+const accommodations = [
   {
     name: 'Sea Side Paradise',
     image: '/images/amphora.jpg',
@@ -79,4 +79,4 @@ const accomodations = [
   },
 ];
 
-export default accomodations;
+export default accommodations;

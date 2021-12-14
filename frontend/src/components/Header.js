@@ -30,7 +30,7 @@ const Header = ({ history }) => {
                 </Nav.Link>
               </LinkContainer>
               {userInfo && !userInfo.isAdmin && (
-                <LinkContainer to='/myAccomodations'>
+                <LinkContainer to='/myAccommodations'>
                   <Nav.Link>
                     <i className='fas fa-bed' /> Dashboard
                   </Nav.Link>
@@ -41,7 +41,7 @@ const Header = ({ history }) => {
                   <LinkContainer to='/admin/userList'>
                     <NavDropdown.Item>Users</NavDropdown.Item>
                   </LinkContainer>
-                  <LinkContainer to='/admin/accomodationList'>
+                  <LinkContainer to='/admin/accommodationList'>
                     <NavDropdown.Item>Accommodations</NavDropdown.Item>
                   </LinkContainer>
                   <LinkContainer to='/admin/bookingList'>

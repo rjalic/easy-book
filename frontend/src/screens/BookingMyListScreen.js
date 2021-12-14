@@ -33,7 +33,7 @@ const BookingOwnerListScreen = ({ history }) => {
           <h1>Bookings</h1>
         </Col>
         <Col className='text-end'>
-          <LinkContainer to='/myaccomodations' className='my-3'>
+          <LinkContainer to='/myaccommodations' className='my-3'>
             <Button>
               <i className='fas fa-bed' /> Accommodations
             </Button>
@@ -66,9 +66,9 @@ const BookingOwnerListScreen = ({ history }) => {
                 <td>{booking._id}</td>
                 <td>{booking.user === null ? 'UNKNOWN' : booking.user.name}</td>
                 <td>
-                  {booking.accomodation === null
+                  {booking.accommodation === null
                     ? 'UNKNOWN'
-                    : booking.accomodation.name}
+                    : booking.accommodation.name}
                 </td>
                 <td>${booking.totalPrice}</td>
                 <td>

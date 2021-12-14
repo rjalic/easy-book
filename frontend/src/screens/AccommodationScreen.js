@@ -6,13 +6,13 @@ import Message from '../components/Message';
 import Loader from '../components/Loader';
 import {
   getTakenDates,
-  listAccomodationDetails,
-} from '../actions/accomodationActions';
+  listAccommodationDetails,
+} from '../actions/accommodationActions';
 import { DateHelper } from '../utils/dateUtils';
 import { LinkContainer } from 'react-router-bootstrap';
 import { DateRange } from 'react-date-range';
 
-const AccomodationScreen = ({ match }) => {
+const AccommodationScreen = ({ match }) => {
   const [isValidRange, setValidRange] = useState(false);
   const [value, setValue] = useState([
     {
@@ -24,8 +24,10 @@ const AccomodationScreen = ({ match }) => {
 
   const dispatch = useDispatch();
 
-  const accomodationDetails = useSelector((state) => state.accomodationDetails);
-  const { loading, error, accomodation } = accomodationDetails;
+  const accommodationDetails = useSelector(
+    (state) => state.accommodationDetails
+  );
+  const { loading, error, accommodation } = accommodationDetails;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -34,8 +36,8 @@ const AccomodationScreen = ({ match }) => {
   const { taken } = accommodationTaken;
 
   useEffect(() => {
-    if (!accomodation.name) {
-      dispatch(listAccomodationDetails(match.params.id, true));
+    if (!accommodation.name) {
+      dispatch(listAccommodationDetails(match.params.id, true));
       dispatch(getTakenDates(match.params.id));
     }
     if (
@@ -50,7 +52,7 @@ const AccomodationScreen = ({ match }) => {
     } else {
       setValidRange(true);
     }
-  }, [dispatch, match, value, accomodation.name]);
+  }, [dispatch, match, value, accommodation.name]);
 
   return (
     <>
@@ -63,11 +65,12 @@ const AccomodationScreen = ({ match }) => {
           <Row>
             <ListGroup variant='flush' className='pt-0'>
               <ListGroup.Item>
-                <strong className='fs-3'>{accomodation.name}</strong>
+                <strong className='fs-3'>{accommodation.name}</strong>
                 <br />
                 <span className='mb-3'>
                   <i className='fas fa-map-marker-alt'></i>{' '}
-                  {accomodation.location.city}, {accomodation.location.country}
+                  {accommodation.location.city},{' '}
+                  {accommodation.location.country}
                 </span>
               </ListGroup.Item>
             </ListGroup>
@@ -77,8 +80,8 @@ const AccomodationScreen = ({ match }) => {
               <ListGroup variant='flush'>
                 <ListGroup.Item>
                   <Image
-                    src={accomodation.image}
-                    alt={accomodation.name}
+                    src={accommodation.image}
+                    alt={accommodation.name}
                     fluid
                     onError={(e) => {
                       e.target.onError = null;
@@ -89,11 +92,11 @@ const AccomodationScreen = ({ match }) => {
                 </ListGroup.Item>
                 <ListGroup.Item>
                   <strong className='fs-4'>Reviews</strong>
-                  {accomodation.reviews.length === 0 && (
+                  {accommodation.reviews.length === 0 && (
                     <Message>No Reviews</Message>
                   )}
                   <ListGroup variant='flush'>
-                    {accomodation.reviews.map(
+                    {accommodation.reviews.map(
                       (review) =>
                         review.user && (
                           <ListGroup.Item key={review._id}>
@@ -123,13 +126,13 @@ const AccomodationScreen = ({ match }) => {
                       }}
                     >
                       <strong className='fs-5'>
-                        ${accomodation.price} / night
+                        ${accommodation.price} / night
                       </strong>
                     </Col>
                     <Col className='m-auto text-end'>
                       <Rating
-                        value={accomodation.rating}
-                        text={`${accomodation.numReviews} reviews`}
+                        value={accommodation.rating}
+                        text={`${accommodation.numReviews} reviews`}
                       />
                     </Col>
                   </Row>
@@ -162,9 +165,9 @@ const AccomodationScreen = ({ match }) => {
                       <h6 className='px-0 mt-1'>Capacity</h6>
                     </Col>
                     <Col>
-                      {accomodation.capacity === 1
-                        ? `${accomodation.capacity} guest`
-                        : `${accomodation.capacity} guests`}
+                      {accommodation.capacity === 1
+                        ? `${accommodation.capacity} guest`
+                        : `${accommodation.capacity} guests`}
                     </Col>
                   </Row>
                 </ListGroup.Item>
@@ -176,12 +179,12 @@ const AccomodationScreen = ({ match }) => {
                   </Row>
                   <Row>
                     <Col>
-                      {accomodation.amenities.length === 0 ? (
+                      {accommodation.amenities.length === 0 ? (
                         <span>
                           Looks like the host didn't specify any amenities...
                         </span>
                       ) : (
-                        accomodation.amenities.map((amenity) => (
+                        accommodation.amenities.map((amenity) => (
                           <span key={amenity._id} className='m-1'>
                             <i className={amenity.icon} key={amenity.id} />{' '}
                             {amenity.name}
@@ -198,13 +201,13 @@ const AccomodationScreen = ({ match }) => {
                     </Col>
                   </Row>
                   <Row>
-                    <Col>{accomodation.description}</Col>
+                    <Col>{accommodation.description}</Col>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
                   {!isValidRange ||
                   !userInfo ||
-                  accomodation.host === userInfo._id ? (
+                  accommodation.host === userInfo._id ? (
                     <div className='d-grid gap-2 mt-2'>
                       <Button variant='primary' disabled>
                         Reserve
@@ -212,8 +215,8 @@ const AccomodationScreen = ({ match }) => {
                     </div>
                   ) : (
                     <LinkContainer
-                      to={`/accomodations/${
-                        accomodation._id
+                      to={`/accommodations/${
+                        accommodation._id
                       }/book?from=${DateHelper.toIsoDate(
                         value[0].startDate
                       )}&to=${DateHelper.toIsoDate(value[0].endDate)}`}
@@ -237,4 +240,4 @@ const AccomodationScreen = ({ match }) => {
   );
 };
 
-export default AccomodationScreen;
+export default AccommodationScreen;

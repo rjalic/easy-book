@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
-import Accomodation from '../models/accomodationModel.js';
+import Accommodation from '../models/accommodationModel.js';
 import Booking from '../models/bookingModel.js';
 
 const userSchema = mongoose.Schema(
@@ -47,7 +47,7 @@ userSchema.pre('remove', async function (next) {
     await Booking.deleteMany({
       user: mongoose.Types.ObjectId(this._id),
     });
-    await Accomodation.deleteMany({
+    await Accommodation.deleteMany({
       host: mongoose.Types.ObjectId(this._id),
     });
   } catch (error) {

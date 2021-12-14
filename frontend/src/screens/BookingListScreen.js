@@ -54,9 +54,9 @@ const BookingListScreen = ({ history }) => {
                 <td>{booking._id}</td>
                 <td>{booking.user === null ? 'UNKNOWN' : booking.user.name}</td>
                 <td>
-                  {booking.accomodation === null
+                  {booking.accommodation === null
                     ? 'UNKNOWN'
-                    : booking.accomodation.name}
+                    : booking.accommodation.name}
                 </td>
                 <td>${booking.totalPrice}</td>
                 <td>

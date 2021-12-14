@@ -22,7 +22,7 @@ const reviewSchema = mongoose.Schema(
   }
 );
 
-const accomodationSchema = mongoose.Schema(
+const accommodationSchema = mongoose.Schema(
   {
     host: {
       type: mongoose.Schema.Types.ObjectId,
@@ -83,10 +83,10 @@ const accomodationSchema = mongoose.Schema(
   }
 );
 
-accomodationSchema.pre('remove', async function (next) {
+accommodationSchema.pre('remove', async function (next) {
   try {
     await Booking.deleteMany({
-      accomodation: mongoose.Types.ObjectId(this._id),
+      accommodation: mongoose.Types.ObjectId(this._id),
     });
   } catch (error) {
     console.log(error);
@@ -94,6 +94,6 @@ accomodationSchema.pre('remove', async function (next) {
   next();
 });
 
-const Accomodation = mongoose.model('Accomodation', accomodationSchema);
+const Accommodation = mongoose.model('Accommodation', accommodationSchema);
 
-export default Accomodation;
+export default Accommodation;

@@ -7,10 +7,10 @@ const bookingSchema = mongoose.Schema(
       required: true,
       ref: 'User',
     },
-    accomodation: {
+    accommodation: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
-      ref: 'Accomodation',
+      ref: 'Accommodation',
     },
     paymentMethod: {
       type: String,

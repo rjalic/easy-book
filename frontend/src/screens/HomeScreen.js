@@ -2,19 +2,19 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
-import Accomodation from '../components/Accomodation';
+import Accommodation from '../components/Accommodation';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import Paginate from '../components/Paginate';
-import { listAccomodations } from '../actions/accomodationActions.js';
+import { listAccommodations } from '../actions/accommodationActions.js';
 import SearchBar from '../components/SearchBar';
 import NotFound from '../components/NotFound';
 
 const HomeScreen = ({ history }) => {
   const dispatch = useDispatch();
 
-  const accomodationList = useSelector((state) => state.accomodationList);
-  const { loading, error, accomodations, page, pages } = accomodationList;
+  const accommodationList = useSelector((state) => state.accommodationList);
+  const { loading, error, accommodations, page, pages } = accommodationList;
 
   let currentQuery = useLocation().search;
 
@@ -26,7 +26,7 @@ const HomeScreen = ({ history }) => {
   const pageNumber = query.get('page') ? query.get('page') : 1;
 
   useEffect(() => {
-    dispatch(listAccomodations(currentQuery, pageNumber));
+    dispatch(listAccommodations(currentQuery, pageNumber));
   }, [dispatch, currentQuery, pageNumber]);
 
   return (
@@ -51,10 +51,10 @@ const HomeScreen = ({ history }) => {
               ) : (
                 <Row>
                   <ul className='list-group'>
-                    {accomodations.map((accomodation) => (
-                      <Accomodation
-                        key={accomodation._id}
-                        accomodation={accomodation}
+                    {accommodations.map((accommodation) => (
+                      <Accommodation
+                        key={accommodation._id}
+                        accommodation={accommodation}
                       />
                     ))}
                   </ul>

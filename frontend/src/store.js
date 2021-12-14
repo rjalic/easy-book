@@ -2,15 +2,15 @@ import { createStore, combineReducers, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import {
-  accomodationListReducer,
-  accomodationDetailsReducer,
-  accomodationDeleteReducer,
-  accomodationCreateReducer,
-  accomodationUpdateReducer,
-  accomodationCreateReviewReducer,
-  accomodationMyListReducer,
+  accommodationListReducer,
+  accommodationDetailsReducer,
+  accommodationDeleteReducer,
+  accommodationCreateReducer,
+  accommodationUpdateReducer,
+  accommodationCreateReviewReducer,
+  accommodationMyListReducer,
   accommodationTakenReducer,
-} from './reducers/accomodationReducers.js';
+} from './reducers/accommodationReducers.js';
 import {
   userLoginReducer,
   userRegisterReducer,
@@ -36,13 +36,13 @@ import {
 } from './reducers/amenityReducer.js';
 
 const reducer = combineReducers({
-  accomodationList: accomodationListReducer,
-  accomodationMyList: accomodationMyListReducer,
-  accomodationDetails: accomodationDetailsReducer,
-  accomodationDelete: accomodationDeleteReducer,
-  accomodationCreate: accomodationCreateReducer,
-  accomodationUpdate: accomodationUpdateReducer,
-  accomodationCreateReview: accomodationCreateReviewReducer,
+  accommodationList: accommodationListReducer,
+  accommodationMyList: accommodationMyListReducer,
+  accommodationDetails: accommodationDetailsReducer,
+  accommodationDelete: accommodationDeleteReducer,
+  accommodationCreate: accommodationCreateReducer,
+  accommodationUpdate: accommodationUpdateReducer,
+  accommodationCreateReview: accommodationCreateReviewReducer,
   accommodationTaken: accommodationTakenReducer,
   userLogin: userLoginReducer,
   userRegister: userRegisterReducer,

@@ -7,17 +7,17 @@ import Message from '../components/Message';
 import Loader from '../components/Loader';
 import FormContainer from '../components/FormContainer';
 import {
-  listAccomodationDetails,
-  updateAccomodation,
-} from '../actions/accomodationActions';
+  listAccommodationDetails,
+  updateAccommodation,
+} from '../actions/accommodationActions';
 import {
-  ACCOMODATION_UPDATE_RESET,
-  ACCOMODATION_DETAILS_RESET,
-} from '../constants/accomodationConstants';
+  ACCOMMODATION_UPDATE_RESET,
+  ACCOMMODATION_DETAILS_RESET,
+} from '../constants/accommodationConstants';
 import { listAmenities } from '../actions/amenityActions';
 
-const AccomodationEditScreen = ({ match, history }) => {
-  const accomodationId = match.params.id;
+const AccommodationEditScreen = ({ match, history }) => {
+  const accommodationId = match.params.id;
 
   const [name, setName] = useState('');
   const [image, setImage] = useState('');
@@ -34,8 +34,10 @@ const AccomodationEditScreen = ({ match, history }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const accomodationDetails = useSelector((state) => state.accomodationDetails);
-  const { loading, error, accomodation } = accomodationDetails;
+  const accommodationDetails = useSelector(
+    (state) => state.accommodationDetails
+  );
+  const { loading, error, accommodation } = accommodationDetails;
 
   const amenityList = useSelector((state) => state.amenityList);
   const {
@@ -44,50 +46,50 @@ const AccomodationEditScreen = ({ match, history }) => {
     amenities: amenitiesList,
   } = amenityList;
 
-  const accomodationUpdate = useSelector((state) => state.accomodationUpdate);
+  const accommodationUpdate = useSelector((state) => state.accommodationUpdate);
   const {
     loading: loadingUpdate,
     error: errorUpdate,
     success: successUpdate,
-  } = accomodationUpdate;
+  } = accommodationUpdate;
 
   useEffect(() => {
     if (!userInfo) {
       history.push('/login');
     } else if (successUpdate) {
-      dispatch({ type: ACCOMODATION_UPDATE_RESET });
-      dispatch({ type: ACCOMODATION_DETAILS_RESET });
+      dispatch({ type: ACCOMMODATION_UPDATE_RESET });
+      dispatch({ type: ACCOMMODATION_DETAILS_RESET });
       if (userInfo.isAdmin) {
-        history.push('/admin/accomodationList');
+        history.push('/admin/accommodationList');
       } else {
-        history.push('/myAccomodations');
+        history.push('/myAccommodations');
       }
     } else {
-      if (!accomodation.name || accomodation._id !== accomodationId) {
-        dispatch({ type: ACCOMODATION_UPDATE_RESET });
-        dispatch(listAccomodationDetails(accomodationId));
+      if (!accommodation.name || accommodation._id !== accommodationId) {
+        dispatch({ type: ACCOMMODATION_UPDATE_RESET });
+        dispatch(listAccommodationDetails(accommodationId));
         dispatch(listAmenities());
       } else if (
-        accomodation &&
-        accomodation.host !== userInfo._id &&
+        accommodation &&
+        accommodation.host !== userInfo._id &&
         !userInfo.isAdmin
       ) {
         history.push('/');
       } else {
-        setName(accomodation.name);
-        setImage(accomodation.image);
-        setPrice(accomodation.price);
-        setDescription(accomodation.description);
-        setLocationCity(accomodation.location.city);
-        setLocationCountry(accomodation.location.country);
-        setCapacity(accomodation.capacity);
-        setAmenities(accomodation.amenities);
+        setName(accommodation.name);
+        setImage(accommodation.image);
+        setPrice(accommodation.price);
+        setDescription(accommodation.description);
+        setLocationCity(accommodation.location.city);
+        setLocationCountry(accommodation.location.country);
+        setCapacity(accommodation.capacity);
+        setAmenities(accommodation.amenities);
       }
     }
   }, [
     dispatch,
-    accomodationId,
-    accomodation,
+    accommodationId,
+    accommodation,
     history,
     successUpdate,
     userInfo,
@@ -121,8 +123,8 @@ const AccomodationEditScreen = ({ match, history }) => {
   const submitHandler = (e) => {
     e.preventDefault();
     dispatch(
-      updateAccomodation({
-        _id: accomodationId,
+      updateAccommodation({
+        _id: accommodationId,
         name,
         image,
         price,
@@ -139,8 +141,8 @@ const AccomodationEditScreen = ({ match, history }) => {
       <Link
         to={
           userInfo && userInfo.isAdmin
-            ? '/admin/accomodationList'
-            : '/myAccomodations'
+            ? '/admin/accommodationList'
+            : '/myAccommodations'
         }
         className='btn btn-light my-3'
       >
@@ -240,8 +242,8 @@ const AccomodationEditScreen = ({ match, history }) => {
                       key={amenityItem._id}
                       className='col-4'
                       defaultChecked={
-                        accomodation.amenities &&
-                        accomodation.amenities.includes(amenityItem._id)
+                        accommodation.amenities &&
+                        accommodation.amenities.includes(amenityItem._id)
                       }
                       onChange={(e) => {
                         let temp = amenities;
@@ -268,4 +270,4 @@ const AccomodationEditScreen = ({ match, history }) => {
   );
 };
 
-export default AccomodationEditScreen;
+export default AccommodationEditScreen;

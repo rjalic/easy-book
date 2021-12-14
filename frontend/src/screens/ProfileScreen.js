@@ -138,7 +138,7 @@ const ProfileScreen = ({ history }) => {
             <tbody>
               {bookings.map((booking) => (
                 <tr key={booking._id}>
-                  <td>{booking.accomodation.name}</td>
+                  <td>{booking.accommodation.name}</td>
                   <td>{new Date(booking.bookedFrom).toDateString()}</td>
                   <td>{new Date(booking.bookedTo).toDateString()}</td>
                   <td>${booking.totalPrice}</td>

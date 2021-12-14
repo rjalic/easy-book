@@ -7,39 +7,40 @@ import Message from '../components/Message';
 import Loader from '../components/Loader';
 import Paginate from '../components/Paginate';
 import {
-  createAccomodation,
-  deleteAccomodation,
-  listAccomodations,
-} from '../actions/accomodationActions';
+  createAccommodation,
+  deleteAccommodation,
+  listMyAccommodations,
+} from '../actions/accommodationActions';
 import {
-  ACCOMODATION_CREATE_RESET,
-  ACCOMODATION_DELETE_RESET,
-  ACCOMODATION_DETAILS_RESET,
-} from '../constants/accomodationConstants';
+  ACCOMMODATION_CREATE_RESET,
+  ACCOMMODATION_DELETE_RESET,
+  ACCOMMODATION_DETAILS_RESET,
+} from '../constants/accommodationConstants';
+import NotFound from '../components/NotFound';
 
-const AccomodationListScreen = ({ history }) => {
+const AccommodationMyListScreen = ({ history, match }) => {
   const dispatch = useDispatch();
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const accomodationList = useSelector((state) => state.accomodationList);
-  const { loading, error, accomodations, page, pages } = accomodationList;
+  const accommodationList = useSelector((state) => state.accommodationMyList);
+  const { loading, error, accommodations, page, pages } = accommodationList;
 
-  const accomodationDelete = useSelector((state) => state.accomodationDelete);
+  const accommodationDelete = useSelector((state) => state.accommodationDelete);
   const {
     loading: loadingDelete,
     error: errorDelete,
     success: successDelete,
-  } = accomodationDelete;
+  } = accommodationDelete;
 
-  const accomodationCreate = useSelector((state) => state.accomodationCreate);
+  const accommodationCreate = useSelector((state) => state.accommodationCreate);
   const {
     loading: loadingCreate,
     error: errorCreate,
     success: successCreate,
-    accomodation: createdAccmodation,
-  } = accomodationCreate;
+    accommodation: createdAccmodation,
+  } = accommodationCreate;
 
   function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -49,18 +50,18 @@ const AccomodationListScreen = ({ history }) => {
   const pageNumber = query.get('page') ? query.get('page') : 1;
 
   useEffect(() => {
-    dispatch({ type: ACCOMODATION_CREATE_RESET });
-    dispatch({ type: ACCOMODATION_DETAILS_RESET });
-    dispatch({ type: ACCOMODATION_DELETE_RESET });
+    dispatch({ type: ACCOMMODATION_CREATE_RESET });
+    dispatch({ type: ACCOMMODATION_DETAILS_RESET });
+    dispatch({ type: ACCOMMODATION_DELETE_RESET });
 
-    if (!userInfo || !userInfo.isAdmin) {
+    if (!userInfo) {
       history.push('/login');
     }
 
     if (successCreate) {
-      history.push(`/accomodations/${createdAccmodation._id}/edit`);
+      history.push(`/accommodations/${createdAccmodation._id}/edit`);
     } else {
-      dispatch(listAccomodations('', pageNumber));
+      dispatch(listMyAccommodations('', pageNumber));
     }
   }, [
     dispatch,
@@ -74,12 +75,12 @@ const AccomodationListScreen = ({ history }) => {
 
   const deleteHandler = (id) => {
     if (window.confirm('Are you sure?')) {
-      dispatch(deleteAccomodation(id));
+      dispatch(deleteAccommodation(id));
     }
   };
 
-  const createAccomodationHandler = () => {
-    dispatch(createAccomodation());
+  const createAccommodationHandler = () => {
+    dispatch(createAccommodation());
   };
 
   return (
@@ -89,7 +90,12 @@ const AccomodationListScreen = ({ history }) => {
           <h1>Accommodations</h1>
         </Col>
         <Col className='text-end'>
-          <Button className='my-3' onClick={createAccomodationHandler}>
+          <LinkContainer to='/myBookings'>
+            <Button>
+              <i className='fas fa-bed' /> Bookings
+            </Button>
+          </LinkContainer>
+          <Button className='my-3 mx-1' onClick={createAccommodationHandler}>
             <i className='fas fa-plus'></i> Create Accommodation
           </Button>
         </Col>
@@ -102,6 +108,10 @@ const AccomodationListScreen = ({ history }) => {
         <Loader />
       ) : error ? (
         <Message variant='danger'>{error}</Message>
+      ) : accommodations.length === 0 ? (
+        <NotFound
+          message={`Looks like you have no accommodations listed... Create one!`}
+        />
       ) : (
         <>
           <Table striped bordered hover responsive className='table-sm'>
@@ -111,27 +121,21 @@ const AccomodationListScreen = ({ history }) => {
                 <th>NAME</th>
                 <th>PRICE</th>
                 <th>CAPACITY</th>
-                <th>HOST</th>
                 <th>RATING</th>
                 <th>ACTIONS</th>
               </tr>
             </thead>
             <tbody>
-              {accomodations.map((accomodation) => (
-                <tr key={accomodation._id}>
-                  <td>{accomodation._id}</td>
-                  <td>{accomodation.name}</td>
-                  <td>${accomodation.price}</td>
-                  <td>{accomodation.capacity}</td>
-                  <td>
-                    {accomodation.host === null
-                      ? 'UNKNOWN'
-                      : accomodation.host.name}
-                  </td>
-                  <td>{accomodation.rating}</td>
+              {accommodations.map((accommodation) => (
+                <tr key={accommodation._id}>
+                  <td>{accommodation._id}</td>
+                  <td>{accommodation.name}</td>
+                  <td>${accommodation.price}</td>
+                  <td>{accommodation.capacity}</td>
+                  <td>{accommodation.rating}</td>
                   <td>
                     <LinkContainer
-                      to={`/accomodations/${accomodation._id}/edit`}
+                      to={`/accommodations/${accommodation._id}/edit`}
                     >
                       <Button variant='light' className='btn-sm'>
                         <i className='fas fa-edit'></i>
@@ -140,7 +144,7 @@ const AccomodationListScreen = ({ history }) => {
                     <Button
                       variant='danger'
                       className='btn-sm'
-                      onClick={() => deleteHandler(accomodation._id)}
+                      onClick={() => deleteHandler(accommodation._id)}
                     >
                       <i className='fas fa-trash'></i>
                     </Button>
@@ -150,11 +154,7 @@ const AccomodationListScreen = ({ history }) => {
             </tbody>
           </Table>
           <div className='d-flex justify-content-center'>
-            <Paginate
-              pages={pages}
-              page={page}
-              path={'/admin/accomodationList'}
-            />
+            <Paginate pages={pages} page={page} path={'/myAccommodations'} />
           </div>
         </>
       )}
@@ -162,4 +162,4 @@ const AccomodationListScreen = ({ history }) => {
   );
 };
 
-export default AccomodationListScreen;
+export default AccommodationMyListScreen;

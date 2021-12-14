@@ -4,9 +4,9 @@ import { Col, Row, Form, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PayPalButton } from 'react-paypal-button-v2';
 import { getBookingDetails, payBooking } from '../actions/bookingActions';
-import { createAccomodationReview } from '../actions/accomodationActions';
-import { ACCOMODATION_CREATE_REVIEW_RESET } from '../constants/accomodationConstants';
-import Accomodation from '../components/Accomodation';
+import { createAccommodationReview } from '../actions/accommodationActions';
+import { ACCOMMODATION_CREATE_REVIEW_RESET } from '../constants/accommodationConstants';
+import Accommodation from '../components/Accommodation';
 import Loader from '../components/Loader';
 import { DateHelper } from '../utils/dateUtils';
 import { BOOKING_PAY_RESET } from '../constants/bookingConstants';
@@ -30,11 +30,13 @@ const PaymentScreen = ({ match, history }) => {
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const accomodationCreateReview = useSelector(
-    (state) => state.accomodationCreateReview
+  const accommodationCreateReview = useSelector(
+    (state) => state.accommodationCreateReview
   );
-  const { error: errorAccomodationReview, success: successAccomodationReview } =
-    accomodationCreateReview;
+  const {
+    error: errorAccommodationReview,
+    success: successAccommodationReview,
+  } = accommodationCreateReview;
 
   useEffect(() => {
     const addPayPalScript = async () => {
@@ -50,11 +52,11 @@ const PaymentScreen = ({ match, history }) => {
     };
     if (!userInfo) {
       history.push('/login');
-    } else if (successAccomodationReview) {
+    } else if (successAccommodationReview) {
       alert('Review submitted');
       setRating(0);
       setComment('');
-      dispatch({ type: ACCOMODATION_CREATE_REVIEW_RESET });
+      dispatch({ type: ACCOMMODATION_CREATE_REVIEW_RESET });
       booking.isReviewed = true;
     } else if (!booking || successPay || booking._id !== match.params.id) {
       dispatch({ type: BOOKING_PAY_RESET });
@@ -64,7 +66,7 @@ const PaymentScreen = ({ match, history }) => {
       booking.user &&
       booking.user._id !== userInfo._id &&
       !userInfo.isAdmin &&
-      userInfo._id !== booking.accomodation.host
+      userInfo._id !== booking.accommodation.host
     ) {
       history.push('/');
     } else if (!booking.isPaid) {
@@ -79,7 +81,7 @@ const PaymentScreen = ({ match, history }) => {
     bookingId,
     booking,
     successPay,
-    successAccomodationReview,
+    successAccommodationReview,
     match,
     userInfo,
     history,
@@ -93,7 +95,7 @@ const PaymentScreen = ({ match, history }) => {
   const submitReviewHandler = (e) => {
     e.preventDefault();
     dispatch(
-      createAccomodationReview(booking._id, {
+      createAccommodationReview(booking._id, {
         rating,
         comment,
       })
@@ -128,9 +130,9 @@ const PaymentScreen = ({ match, history }) => {
               </Row>
               <Row>
                 <span>
-                  {booking.accomodation.capacity === 1
-                    ? `${booking.accomodation.capacity} guest`
-                    : `${booking.accomodation.capacity} guests`}
+                  {booking.accommodation.capacity === 1
+                    ? `${booking.accommodation.capacity} guest`
+                    : `${booking.accommodation.capacity} guests`}
                 </span>
               </Row>
               <Row className='mt-2'>
@@ -138,7 +140,7 @@ const PaymentScreen = ({ match, history }) => {
               </Row>
               <Row>
                 <span>
-                  <strong>${booking.accomodation.price}</strong> / night
+                  <strong>${booking.accommodation.price}</strong> / night
                 </span>
               </Row>
               <Row className='mt-2'>
@@ -198,9 +200,9 @@ const PaymentScreen = ({ match, history }) => {
               ) : booking.isPaid && userInfo._id === booking.user._id ? (
                 <Row className='mt-2'>
                   <strong className='fs-4'>Write A Review</strong>
-                  {errorAccomodationReview && (
+                  {errorAccommodationReview && (
                     <Message variant='danger'>
-                      {errorAccomodationReview}
+                      {errorAccommodationReview}
                     </Message>
                   )}
                   <Form onSubmit={submitReviewHandler}>
@@ -241,7 +243,7 @@ const PaymentScreen = ({ match, history }) => {
               ) : null}
             </Col>
             <Col md={8}>
-              <Accomodation accomodation={booking.accomodation} />
+              <Accommodation accommodation={booking.accommodation} />
             </Col>
           </Row>
         </>

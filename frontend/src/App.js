@@ -4,7 +4,7 @@ import { Container } from 'react-bootstrap';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomeScreen from './screens/HomeScreen';
-import AccomodationScreen from './screens/AccomodationScreen';
+import AccommodationScreen from './screens/AccommodationScreen';
 import LoginScreen from './screens/LoginScreen';
 import RegisterScreen from './screens/RegisterScreen';
 import ProfileScreen from './screens/ProfileScreen';
@@ -12,11 +12,11 @@ import BookingScreen from './screens/BookingScreen';
 import PaymentScreen from './screens/PaymentScreen';
 import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
-import AccomodationListScreen from './screens/AccomodationListScreen';
-import AccomodationEditScreen from './screens/AccomodationEditScreen';
+import AccommodationListScreen from './screens/AccommodationListScreen';
+import AccommodationEditScreen from './screens/AccommodationEditScreen';
 import BookingListScreen from './screens/BookingListScreen';
 import AmenityListScreen from './screens/AmenityListScreen';
-import AccomodationMyListScreen from './screens/AccomodationMyListScreen';
+import AccommodationMyListScreen from './screens/AccommodationMyListScreen';
 import BookingOwnerListScreen from './screens/BookingMyListScreen';
 
 const App = () => {
@@ -29,28 +29,28 @@ const App = () => {
           <Route path='/register' component={RegisterScreen} />
           <Route path='/profile' component={ProfileScreen} />
           <Route
-            path='/accomodations/:id'
-            component={AccomodationScreen}
+            path='/accommodations/:id'
+            component={AccommodationScreen}
             exact
           />
-          <Route path='/accomodations/:id/book' component={BookingScreen} />
+          <Route path='/accommodations/:id/book' component={BookingScreen} />
           <Route path='/bookings/:id' component={PaymentScreen} />
           <Route path='/admin/userList' component={UserListScreen} />
           <Route path='/admin/bookingList' component={BookingListScreen} />
           <Route path='/myBookings' component={BookingOwnerListScreen} />
           <Route path='/admin/user/:id/edit' component={UserEditScreen} />
           <Route
-            path='/accomodations/:id/edit'
-            component={AccomodationEditScreen}
+            path='/accommodations/:id/edit'
+            component={AccommodationEditScreen}
           />
           <Route
-            path='/admin/accomodationList'
-            component={AccomodationListScreen}
+            path='/admin/accommodationList'
+            component={AccommodationListScreen}
             exact
           />
           <Route
-            path='/myAccomodations'
-            component={AccomodationMyListScreen}
+            path='/myAccommodations'
+            component={AccommodationMyListScreen}
             exact
           />
           <Route path='/admin/amenityList' component={AmenityListScreen} />

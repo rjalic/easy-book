@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import Accomodation from '../models/accomodationModel.js';
+import Accommodation from '../models/accommodationModel.js';
 
 const amenitySchema = mongoose.Schema({
   name: {
@@ -14,7 +14,7 @@ const amenitySchema = mongoose.Schema({
 
 amenitySchema.pre('remove', async function (next) {
   try {
-    await Accomodation.updateMany(
+    await Accommodation.updateMany(
       {},
       { $pull: { amenities: { $in: mongoose.Types.ObjectId(this._id) } } },
       { multi: true }

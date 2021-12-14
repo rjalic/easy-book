@@ -1,14 +1,14 @@
 import asyncHandler from 'express-async-handler';
 import mongoose from 'mongoose';
 import Booking from '../models/bookingModel.js';
-import Accomodation from '../models/accomodationModel.js';
+import Accommodation from '../models/accommodationModel.js';
 
 // @desc    Create new booking
 // @route   POST /api/bookings
 // @access  Private
 const createBooking = asyncHandler(async (req, res) => {
   const {
-    accomodation,
+    accommodation,
     paymentMethod,
     totalPrice,
     paymentResult,
@@ -16,13 +16,13 @@ const createBooking = asyncHandler(async (req, res) => {
     bookedTo,
   } = req.body;
 
-  if (!accomodation) {
+  if (!accommodation) {
     res.status(400);
-    throw new Error('Specify accomodation');
+    throw new Error('Specify accommodation');
   } else {
     const booking = new Booking({
       user: req.user._id,
-      accomodation,
+      accommodation,
       paymentMethod,
       totalPrice,
       paymentResult,
@@ -41,7 +41,7 @@ const createBooking = asyncHandler(async (req, res) => {
 const getBookingById = asyncHandler(async (req, res) => {
   const booking = await Booking.findById(req.params.id)
     .populate('user', 'name email')
-    .populate('accomodation');
+    .populate('accommodation');
 
   if (booking) {
     res.json(booking);
@@ -80,7 +80,7 @@ const updateBookingToPaid = asyncHandler(async (req, res) => {
 // @access  Private
 const getMyBookings = asyncHandler(async (req, res) => {
   const bookings = await Booking.find({ user: req.user.id }).populate(
-    'accomodation',
+    'accommodation',
     'name'
   );
 
@@ -93,7 +93,7 @@ const getMyBookings = asyncHandler(async (req, res) => {
 const getBookings = asyncHandler(async (req, res) => {
   const bookings = await Booking.find({})
     .populate('user', 'id name email')
-    .populate('accomodation', 'id name');
+    .populate('accommodation', 'id name');
 
   res.json(bookings);
 });
@@ -103,12 +103,12 @@ const getBookings = asyncHandler(async (req, res) => {
 // @access  Private
 const createReview = asyncHandler(async (req, res) => {
   const booking = await Booking.findById(req.params.id).populate(
-    'accomodation',
+    'accommodation',
     '_id'
   );
-  const accomodation = await Accomodation.findById(booking.accomodation._id);
+  const accommodation = await Accommodation.findById(booking.accommodation._id);
 
-  if (booking && accomodation) {
+  if (booking && accommodation) {
     if (!booking.isReviewed) {
       const { rating, comment } = req.body;
 
@@ -118,15 +118,15 @@ const createReview = asyncHandler(async (req, res) => {
         user: req.user._id,
       };
 
-      accomodation.reviews.push(review);
-      accomodation.numReviews = accomodation.reviews.length;
-      accomodation.rating = (
-        accomodation.reviews.reduce((acc, item) => item.rating + acc, 0) /
-        accomodation.reviews.length
+      accommodation.reviews.push(review);
+      accommodation.numReviews = accommodation.reviews.length;
+      accommodation.rating = (
+        accommodation.reviews.reduce((acc, item) => item.rating + acc, 0) /
+        accommodation.reviews.length
       ).toFixed(1);
       booking.isReviewed = true;
 
-      await accomodation.save();
+      await accommodation.save();
       await booking.save();
       res.status(201).json({ message: 'Review added' });
     }
@@ -136,17 +136,17 @@ const createReview = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Get bookings for the owner's accomodations
+// @desc    Get bookings for the owner's accommodations
 // @route   GET /api/bookings/owner
 // @access  Private
 const getOwnerBookings = asyncHandler(async (req, res) => {
   console.log(req.user._id);
   const obj = mongoose.Types.ObjectId(req.user.id);
-  const accomodations = await Accomodation.find({ host: obj });
+  const accommodations = await Accommodation.find({ host: obj });
   const bookings = await Booking.find({
-    accomodation: { $in: accomodations },
+    accommodation: { $in: accommodations },
   })
-    .populate('accomodation', 'name')
+    .populate('accommodation', 'name')
     .populate('user', 'name email');
   res.json(bookings);
 });

@@ -1,12 +1,12 @@
 import asyncHandler from 'express-async-handler';
-import Accomodation from '../models/accomodationModel.js';
+import Accommodation from '../models/accommodationModel.js';
 import Booking from '../models/bookingModel.js';
 import mongoose from 'mongoose';
 
-// @desc    Fetch all accomodations
-// @route   GET /api/accomodations
+// @desc    Fetch all accommodations
+// @route   GET /api/accommodations
 // @access  Public
-const getAccomodations = asyncHandler(async (req, res) => {
+const getAccommodations = asyncHandler(async (req, res) => {
   const pageSize = 10;
   const page = Number(req.query.pageNumber) || 1;
   const capacity = Number(req.query.capacity) || 1;
@@ -26,7 +26,7 @@ const getAccomodations = asyncHandler(async (req, res) => {
       }
     : {};
 
-  const count = await Accomodation.countDocuments({
+  const count = await Accommodation.countDocuments({
     name: { $regex: req.query.keyword ? req.query.keyword : '', $options: 'i' },
     capacity: { $gte: capacity },
     price: { $gte: minPrice, $lt: maxPrice },
@@ -35,7 +35,7 @@ const getAccomodations = asyncHandler(async (req, res) => {
     rating: { $gte: rating },
   });
 
-  const accomodations = await Accomodation.find({ ...keyword })
+  const accommodations = await Accommodation.find({ ...keyword })
     .where('capacity')
     .gte(capacity)
     .where('price')
@@ -53,72 +53,72 @@ const getAccomodations = asyncHandler(async (req, res) => {
     .limit(pageSize)
     .skip(pageSize * (page - 1));
 
-  res.json({ accomodations, page, pages: Math.ceil(count / pageSize) });
+  res.json({ accommodations, page, pages: Math.ceil(count / pageSize) });
 });
 
-// @desc    Get current user's accomodations
-// @route   GET /api/accomodations/myaccomodations
+// @desc    Get current user's accommodations
+// @route   GET /api/accommodations/myaccommodations
 // @access  Private
-const getMyAccomodations = asyncHandler(async (req, res) => {
+const getMyAccommodations = asyncHandler(async (req, res) => {
   const pageSize = 10;
   const page = Number(req.query.pageNumber) || 1;
   const obj = mongoose.Types.ObjectId(req.user.id);
-  const accomodations = await Accomodation.find({ host: obj });
+  const accommodations = await Accommodation.find({ host: obj });
 
-  const count = await Accomodation.countDocuments({ host: obj });
+  const count = await Accommodation.countDocuments({ host: obj });
 
-  res.json({ accomodations, page, pages: Math.ceil(count / pageSize) });
+  res.json({ accommodations, page, pages: Math.ceil(count / pageSize) });
 });
 
-// @desc    Fetch single accomodation
-// @route   GET /api/accomodations/:id
+// @desc    Fetch single accommodation
+// @route   GET /api/accommodations/:id
 // @access  Public
-const getAccomodationById = asyncHandler(async (req, res) => {
+const getAccommodationById = asyncHandler(async (req, res) => {
   const populateAmenities =
     req.query.populateAmenities === 'true' ? true : false;
 
-  let accomodation = await Accomodation.findById(req.params.id).populate(
+  let accommodation = await Accommodation.findById(req.params.id).populate(
     'reviews.user',
     'name'
   );
 
-  if (accomodation) {
+  if (accommodation) {
     if (populateAmenities) {
-      accomodation = await Accomodation.findById(req.params.id)
+      accommodation = await Accommodation.findById(req.params.id)
         .populate('reviews.user', 'name')
         .populate('amenities');
     }
-    res.json(accomodation);
+    res.json(accommodation);
   } else {
     res.status(404);
-    throw new Error('Accomodation not found');
+    throw new Error('Accommodation not found');
   }
 });
 
-// @desc    Delete accomodation
-// @route   DELETE /api/accomodations/:id
+// @desc    Delete accommodation
+// @route   DELETE /api/accommodations/:id
 // @access  Private/admin
-const deleteAccomodation = asyncHandler(async (req, res) => {
-  const accomodation = await Accomodation.findById(req.params.id);
+const deleteAccommodation = asyncHandler(async (req, res) => {
+  const accommodation = await Accommodation.findById(req.params.id);
 
-  if (accomodation) {
-    if (accomodation.host.toString() !== req.user.id && !req.user.isAdmin) {
+  if (accommodation) {
+    if (accommodation.host.toString() !== req.user.id && !req.user.isAdmin) {
       res.status(401);
       throw new Error('Not authorized to delete this accommodation.');
     }
-    await accomodation.remove();
-    res.json({ message: 'Accomodation deleted' });
+    await accommodation.remove();
+    res.json({ message: 'Accommodation deleted' });
   } else {
     res.status(404);
-    throw new Error('Accomodation not found');
+    throw new Error('Accommodation not found');
   }
 });
 
-// @desc    Create accomodation
-// @route   POST /api/accomodations
+// @desc    Create accommodation
+// @route   POST /api/accommodations
 // @access  Private/admin
-const createAccomodation = asyncHandler(async (req, res) => {
-  const accomodation = new Accomodation({
+const createAccommodation = asyncHandler(async (req, res) => {
+  const accommodation = new Accommodation({
     name: 'Sample name',
     price: 0,
     host: req.user._id,
@@ -135,20 +135,20 @@ const createAccomodation = asyncHandler(async (req, res) => {
     amenities: [],
   });
 
-  const createdAccomodation = await accomodation.save();
-  res.status(201).json(createdAccomodation);
+  const createdAccommodation = await accommodation.save();
+  res.status(201).json(createdAccommodation);
 });
 
-// @desc    Update accomodation
-// @route   PUT /api/accomodations/:id
+// @desc    Update accommodation
+// @route   PUT /api/accommodations/:id
 // @access  Private
-const updateAccomodation = asyncHandler(async (req, res) => {
-  const accomodation = await Accomodation.findById(req.params.id);
+const updateAccommodation = asyncHandler(async (req, res) => {
+  const accommodation = await Accommodation.findById(req.params.id);
 
-  if (accomodation) {
-    console.log(accomodation.host.toString(), req.user.id);
+  if (accommodation) {
+    console.log(accommodation.host.toString(), req.user.id);
 
-    if (accomodation.host.toString() !== req.user.id && !req.user.isAdmin) {
+    if (accommodation.host.toString() !== req.user.id && !req.user.isAdmin) {
       console.log('here');
       res.status(401);
       throw new Error('No authorized to update this accommodation.');
@@ -157,30 +157,30 @@ const updateAccomodation = asyncHandler(async (req, res) => {
     const { name, price, image, description, location, capacity, amenities } =
       req.body;
 
-    accomodation.name = name;
-    accomodation.price = price;
-    accomodation.image = image;
-    accomodation.description = description;
-    accomodation.location.city = location.city;
-    accomodation.location.country = location.country;
-    accomodation.capacity = capacity;
-    accomodation.amenities = amenities;
+    accommodation.name = name;
+    accommodation.price = price;
+    accommodation.image = image;
+    accommodation.description = description;
+    accommodation.location.city = location.city;
+    accommodation.location.country = location.country;
+    accommodation.capacity = capacity;
+    accommodation.amenities = amenities;
 
-    const updatedAccomodation = await accomodation
+    const updatedAccommodation = await accommodation
       .save()
       .catch((err) => console.error(err));
-    res.status(201).json(updatedAccomodation);
+    res.status(201).json(updatedAccommodation);
   } else {
     res.status(404);
-    throw new Error('Accomodation not found');
+    throw new Error('Accommodation not found');
   }
 });
 
 // @desc    Get taken dates
-// @route   GET /api/accomodations/:id/taken
+// @route   GET /api/accommodations/:id/taken
 // @access  Public
 const getTakenDates = asyncHandler(async (req, res) => {
-  const bookings = await Booking.find({ accomodation: req.params.id });
+  const bookings = await Booking.find({ accommodation: req.params.id });
   let dates = new Set();
 
   if (bookings) {
@@ -207,11 +207,11 @@ const getTakenDates = asyncHandler(async (req, res) => {
 });
 
 export {
-  getAccomodations,
-  getAccomodationById,
-  deleteAccomodation,
-  createAccomodation,
-  updateAccomodation,
-  getMyAccomodations,
+  getAccommodations,
+  getAccommodationById,
+  deleteAccommodation,
+  createAccommodation,
+  updateAccommodation,
+  getMyAccommodations,
   getTakenDates,
 };

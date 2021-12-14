@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Col, Row } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import Accomodation from '../components/Accomodation';
+import Accommodation from '../components/Accommodation';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
 import { createBooking } from '../actions/bookingActions';
@@ -20,7 +20,7 @@ const BookingScreen = ({ history, match, location }) => {
     e.preventDefault();
     dispatch(
       createBooking({
-        accomodation,
+        accommodation,
         paymentMethod,
         totalPrice,
         bookedFrom,
@@ -36,8 +36,10 @@ const BookingScreen = ({ history, match, location }) => {
     success: bookingSuccess,
   } = bookingCreate;
 
-  const accomodationDetails = useSelector((state) => state.accomodationDetails);
-  const { loading, error, accomodation } = accomodationDetails;
+  const accommodationDetails = useSelector(
+    (state) => state.accommodationDetails
+  );
+  const { loading, error, accommodation } = accommodationDetails;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
@@ -56,11 +58,11 @@ const BookingScreen = ({ history, match, location }) => {
         new Date(DateHelper.normalizeDate(new Date(query[1].split('=')[1])))
       );
       setTotalPrice(
-        accomodation.price * DateHelper.daysBetween(bookedFrom, bookedTo)
+        accommodation.price * DateHelper.daysBetween(bookedFrom, bookedTo)
       );
     }
   }, [
-    accomodation,
+    accommodation,
     bookedFrom,
     bookedTo,
     totalPrice,
@@ -105,9 +107,9 @@ const BookingScreen = ({ history, match, location }) => {
               </Row>
               <Row>
                 <span>
-                  {accomodation.capacity === 1
-                    ? `${accomodation.capacity} guest`
-                    : `${accomodation.capacity} guests`}
+                  {accommodation.capacity === 1
+                    ? `${accommodation.capacity} guest`
+                    : `${accommodation.capacity} guests`}
                 </span>
               </Row>
               <Row className='mt-2'>
@@ -115,7 +117,7 @@ const BookingScreen = ({ history, match, location }) => {
               </Row>
               <Row>
                 <span>
-                  <strong>${accomodation.price}</strong> / night
+                  <strong>${accommodation.price}</strong> / night
                 </span>
               </Row>
               <Row className='mt-2'>
@@ -141,7 +143,7 @@ const BookingScreen = ({ history, match, location }) => {
               ) : null}
             </Col>
             <Col md={8}>
-              <Accomodation accomodation={accomodation} />
+              <Accommodation accommodation={accommodation} />
             </Col>
           </Row>
           {!bookingSuccess ? (
