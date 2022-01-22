@@ -14,6 +14,7 @@ import UserListScreen from './screens/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
 import AccommodationListScreen from './screens/AccommodationListScreen';
 import AccommodationEditScreen from './screens/AccommodationEditScreen';
+import AccommodationCreateScreen from './screens/AccommodationCreateScreen';
 import BookingListScreen from './screens/BookingListScreen';
 import AmenityListScreen from './screens/AmenityListScreen';
 import AccommodationMyListScreen from './screens/AccommodationMyListScreen';
@@ -28,6 +29,11 @@ const App = () => {
           <Route path='/login' component={LoginScreen} />
           <Route path='/register' component={RegisterScreen} />
           <Route path='/profile' component={ProfileScreen} />
+          <Route
+            path='/createAccommodation'
+            component={AccommodationCreateScreen}
+            exact
+          />
           <Route
             path='/accommodations/:id'
             component={AccommodationScreen}

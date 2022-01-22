@@ -1,6 +1,7 @@
 import asyncHandler from 'express-async-handler';
 import Accommodation from '../models/accommodationModel.js';
 import Booking from '../models/bookingModel.js';
+import User from '../models/userModel.js';
 import mongoose from 'mongoose';
 
 // @desc    Fetch all accommodations
@@ -11,7 +12,7 @@ const getAccommodations = asyncHandler(async (req, res) => {
   const page = Number(req.query.pageNumber) || 1;
   const capacity = Number(req.query.capacity) || 1;
   const minPrice = Number(req.query.minPrice) || 0;
-  const maxPrice = Number(req.query.maxPrice) || 100000000;
+  const maxPrice = Number(req.query.maxPrice) || Number.MAX_SAFE_INTEGER;
   const city = req.query.city || '';
   const country = req.query.country || '';
   const rating = Number(req.query.rating) || 0;
@@ -118,24 +119,33 @@ const deleteAccommodation = asyncHandler(async (req, res) => {
 // @route   POST /api/accommodations
 // @access  Private/admin
 const createAccommodation = asyncHandler(async (req, res) => {
-  const accommodation = new Accommodation({
-    name: 'Sample name',
-    price: 0,
-    host: req.user._id,
-    image: '/images/placeholder.png',
-    description: 'Sample description',
-    location: {
-      city: 'Sample city',
-      country: 'Sample country',
-    },
+  const user = await User.findById(req.user.id);
+
+  if (!user) {
+    res.status(401);
+    throw new Error('Not authorized to create an accommodation.');
+  }
+
+  const { name, price, image, description, location, capacity, amenities } =
+    req.body;
+
+  const accommodation = await Accommodation.create({
+    name,
+    price,
+    host: req.user.id,
+    image,
+    description,
+    location,
     reviews: [],
     rating: 0,
     numReviews: 0,
-    capacity: 1,
-    amenities: [],
+    capacity,
+    amenities,
   });
 
-  const createdAccommodation = await accommodation.save();
+  const createdAccommodation = await accommodation
+    .save()
+    .catch((err) => console.error(err));
   res.status(201).json(createdAccommodation);
 });
 
@@ -149,9 +159,8 @@ const updateAccommodation = asyncHandler(async (req, res) => {
     console.log(accommodation.host.toString(), req.user.id);
 
     if (accommodation.host.toString() !== req.user.id && !req.user.isAdmin) {
-      console.log('here');
       res.status(401);
-      throw new Error('No authorized to update this accommodation.');
+      throw new Error('Not authorized to update this accommodation.');
     }
 
     const { name, price, image, description, location, capacity, amenities } =
