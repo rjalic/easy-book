@@ -8,6 +8,7 @@ import {
   getTakenDates,
   listAccommodationDetails,
 } from '../actions/accommodationActions';
+import { lockDates } from '../actions/bookingActions';
 import { DateHelper } from '../utils/dateUtils';
 import { LinkContainer } from 'react-router-bootstrap';
 import { DateRange } from 'react-date-range';
@@ -52,7 +53,34 @@ const AccommodationScreen = ({ match }) => {
     } else {
       setValidRange(true);
     }
-  }, [dispatch, match, value, accommodation.name]);
+  }, [dispatch, match, value, accommodation.name, taken]);
+
+  const lockHandler = (e) => {
+    e.preventDefault();
+    if (
+      window.confirm(
+        `Are you sure you want to lock this accommodation from ${DateHelper.toDateString(
+          value[0].startDate
+        )} to ${DateHelper.toDateString(value[0].endDate)}?`
+      )
+    ) {
+      dispatch(
+        lockDates(
+          accommodation,
+          DateHelper.toIsoDate(value[0].startDate),
+          DateHelper.toIsoDate(value[0].endDate)
+        )
+      );
+    }
+    dispatch(getTakenDates(match.params.id));
+    setValue([
+      {
+        startDate: new Date(),
+        endDate: new Date(),
+        key: 'selection',
+      },
+    ]);
+  };
 
   return (
     <>
@@ -205,12 +233,20 @@ const AccommodationScreen = ({ match }) => {
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  {!isValidRange ||
-                  !userInfo ||
-                  accommodation.host === userInfo._id ? (
+                  {!isValidRange || !userInfo ? (
                     <div className='d-grid gap-2 mt-2'>
                       <Button variant='primary' disabled>
-                        Reserve
+                        {accommodation.host === userInfo._id
+                          ? 'Lock'
+                          : 'Reserve'}
+                      </Button>
+                    </div>
+                  ) : isValidRange &&
+                    userInfo &&
+                    accommodation.host === userInfo._id ? (
+                    <div className='d-grid gap-2 mt-2'>
+                      <Button variant='primary' onClick={(e) => lockHandler(e)}>
+                        Lock
                       </Button>
                     </div>
                   ) : (

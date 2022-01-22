@@ -72,8 +72,6 @@ const AccomodationCreateScreen = ({ history }) => {
           'Content-Type': 'multipart/form-data',
         },
       };
-      console.log(file);
-      console.log(formData);
 
       const { data } = await axios.post('/api/upload', formData, config);
 
@@ -213,7 +211,6 @@ const AccomodationCreateScreen = ({ history }) => {
                           temp.push(amenityItem._id);
                         }
                         setAmenities(temp);
-                        console.log(amenities);
                       }}
                     />
                   ))}

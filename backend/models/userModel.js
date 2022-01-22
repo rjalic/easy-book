@@ -51,7 +51,7 @@ userSchema.pre('remove', async function (next) {
       host: mongoose.Types.ObjectId(this._id),
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
   next();
 });

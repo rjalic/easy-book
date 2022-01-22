@@ -19,6 +19,12 @@ import {
   BOOKING_PAY_REQUEST,
   BOOKING_PAY_SUCCESS,
   BOOKING_SAVE_PAYMENT_METHOD,
+  BOOKING_LOCK_DATES_REQUEST,
+  BOOKING_LOCK_DATES_SUCCESS,
+  BOOKING_LOCK_DATES_FAIL,
+  BOOKING_UNLOCK_DATES_REQUEST,
+  BOOKING_UNLOCK_DATES_SUCCESS,
+  BOOKING_UNLOCK_DATES_FAIL,
 } from '../constants/bookingConstants';
 
 export const savePaymentMethod = (paymentMethod) => (dispatch) => {
@@ -227,6 +233,68 @@ export const listOwnerBookings = () => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: BOOKING_OWNER_LIST_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const lockDates =
+  (accommodation, fromDate, toDate) => async (dispatch, getState) => {
+    try {
+      dispatch({ type: BOOKING_LOCK_DATES_REQUEST });
+
+      const {
+        userLogin: { userInfo },
+      } = getState();
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      };
+
+      const { data } = await axios.post(
+        `/api/bookings/lock/${accommodation._id}`,
+        { fromDate, toDate },
+        config
+      );
+
+      dispatch({ type: BOOKING_LOCK_DATES_SUCCESS, payload: data });
+    } catch (error) {
+      dispatch({
+        type: BOOKING_LOCK_DATES_FAIL,
+        payload:
+          error.response && error.response.data.message
+            ? error.response.data.message
+            : error.message,
+      });
+    }
+  };
+
+export const unlockDates = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: BOOKING_UNLOCK_DATES_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.delete(`/api/bookings/lock/${id}`, config);
+
+    dispatch({ type: BOOKING_UNLOCK_DATES_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: BOOKING_UNLOCK_DATES_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

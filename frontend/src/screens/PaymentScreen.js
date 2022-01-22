@@ -88,7 +88,6 @@ const PaymentScreen = ({ match, history }) => {
   ]);
 
   const successPaymentHandler = (paymentResult) => {
-    console.log(paymentResult);
     dispatch(payBooking(bookingId, paymentResult));
   };
 
@@ -157,7 +156,6 @@ const PaymentScreen = ({ match, history }) => {
               <Row>
                 <span>{booking.paymentMethod}</span>
               </Row>
-              {console.log(userInfo._id === booking.user)}
               {!booking.isPaid && userInfo._id === booking.user._id ? (
                 <>
                   <Row className='mt-2'>

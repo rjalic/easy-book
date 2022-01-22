@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
-import { listOwnerBookings } from '../actions/bookingActions';
+import { listOwnerBookings, unlockDates } from '../actions/bookingActions';
 import { DateHelper } from '../utils/dateUtils';
 import NotFound from '../components/NotFound';
 
@@ -25,6 +25,14 @@ const BookingOwnerListScreen = ({ history }) => {
       history.push('/login');
     }
   }, [dispatch, history, userInfo]);
+
+  const unlockHandler = (e, id) => {
+    e.preventDefault();
+    if (window.confirm(`Are you sure you want to unlock booking ${id}?`)) {
+      dispatch(unlockDates(id));
+      dispatch(listOwnerBookings());
+    }
+  };
 
   return (
     <>
@@ -54,7 +62,7 @@ const BookingOwnerListScreen = ({ history }) => {
               <th>USER</th>
               <th>ACCOMMODATION</th>
               <th>TOTAL PRICE</th>
-              <th>PAID</th>
+              <th>STATUS</th>
               <th>FROM</th>
               <th>TO</th>
               <th>ACTIONS</th>
@@ -71,35 +79,40 @@ const BookingOwnerListScreen = ({ history }) => {
                     : booking.accommodation.name}
                 </td>
                 <td>${booking.totalPrice}</td>
-                <td>
-                  {booking.isPaid ? (
-                    <i className='fas fa-check' style={{ color: 'green' }}></i>
-                  ) : (
-                    <i className='fas fa-times' style={{ color: 'red' }}></i>
-                  )}
-                </td>
+                <td>{booking.status}</td>
                 <td>{DateHelper.toDateString(booking.bookedFrom)}</td>
                 <td>{DateHelper.toDateString(booking.bookedTo)}</td>
                 <td>
-                  <a
-                    href={`mailto:${booking.user.email}`}
-                    className='btn btn-primary btn-sm m-1'
-                  >
-                    <i className='fas fa-envelope' />
-                  </a>
-                  <Link
-                    to={`/bookings/${booking._id}`}
-                    className='btn btn-primary btn-sm m-1'
-                  >
-                    <i
-                      className='fas fa-angle-right'
-                      style={{
-                        fontSize: '14px',
-                        width: '11px',
-                        height: '11px',
-                      }}
-                    />
-                  </Link>
+                  {booking.status === 'LOCKED' ? (
+                    <Button
+                      className='btn-sm'
+                      onClick={(e) => unlockHandler(e, booking._id)}
+                    >
+                      <i className='fas fa-unlock-alt'></i>
+                    </Button>
+                  ) : (
+                    <>
+                      <a
+                        href={`mailto:${booking.user.email}`}
+                        className='btn btn-primary btn-sm m-1'
+                      >
+                        <i className='fas fa-envelope' />
+                      </a>
+                      <Link
+                        to={`/bookings/${booking._id}`}
+                        className='btn btn-primary btn-sm m-1'
+                      >
+                        <i
+                          className='fas fa-angle-right'
+                          style={{
+                            fontSize: '14px',
+                            width: '11px',
+                            height: '11px',
+                          }}
+                        />
+                      </Link>
+                    </>
+                  )}
                 </td>
               </tr>
             ))}

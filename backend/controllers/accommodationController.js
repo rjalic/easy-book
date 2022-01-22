@@ -17,7 +17,6 @@ const getAccommodations = asyncHandler(async (req, res) => {
   const country = req.query.country || '';
   const rating = Number(req.query.rating) || 0;
 
-  console.log(req.query);
   const keyword = req.query.keyword
     ? {
         name: {
@@ -156,8 +155,6 @@ const updateAccommodation = asyncHandler(async (req, res) => {
   const accommodation = await Accommodation.findById(req.params.id);
 
   if (accommodation) {
-    console.log(accommodation.host.toString(), req.user.id);
-
     if (accommodation.host.toString() !== req.user.id && !req.user.isAdmin) {
       res.status(401);
       throw new Error('Not authorized to update this accommodation.');

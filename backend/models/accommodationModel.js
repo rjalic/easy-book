@@ -89,7 +89,7 @@ accommodationSchema.pre('remove', async function (next) {
       accommodation: mongoose.Types.ObjectId(this._id),
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
   next();
 });

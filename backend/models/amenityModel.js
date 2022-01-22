@@ -20,7 +20,7 @@ amenitySchema.pre('remove', async function (next) {
       { multi: true }
     );
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
   next();
 });

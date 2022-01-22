@@ -14,7 +14,6 @@ const bookingSchema = mongoose.Schema(
     },
     paymentMethod: {
       type: String,
-      required: true,
     },
     paymentResult: {
       id: { type: String },
@@ -44,6 +43,11 @@ const bookingSchema = mongoose.Schema(
     isReviewed: {
       type: Boolean,
       default: false,
+    },
+    status: {
+      type: String,
+      enum: ['PENDING', 'PAID', 'CANCELLED', 'LOCKED'],
+      default: 'PENDING',
     },
   },
   {

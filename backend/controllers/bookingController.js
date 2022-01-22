@@ -140,7 +140,6 @@ const createReview = asyncHandler(async (req, res) => {
 // @route   GET /api/bookings/owner
 // @access  Private
 const getOwnerBookings = asyncHandler(async (req, res) => {
-  console.log(req.user._id);
   const obj = mongoose.Types.ObjectId(req.user.id);
   const accommodations = await Accommodation.find({ host: obj });
   const bookings = await Booking.find({
@@ -151,6 +150,51 @@ const getOwnerBookings = asyncHandler(async (req, res) => {
   res.json(bookings);
 });
 
+// @desc    Lock the accommodation for given date range
+// @route   POST /api/bookings/lock/:id
+// @access  Private
+const lockDateRange = asyncHandler(async (req, res) => {
+  const accommodation = await Accommodation.findById(req.params.id);
+
+  if (accommodation) {
+    if (accommodation.host.toString() !== req.user.id && !req.user.isAdmin) {
+      res.status(401);
+      throw new Error('Not authorized to lock this date range.');
+    }
+
+    const { fromDate, toDate } = req.body;
+    const booking = new Booking({
+      user: req.user._id,
+      accommodation: req.params.id,
+      totalPrice: 0,
+      bookedFrom: fromDate,
+      bookedTo: toDate,
+      status: 'LOCKED',
+    });
+
+    await booking.save().catch((err) => console.error(err));
+    res.status(200).json({ message: 'Date range locked.' });
+  } else {
+    res.status(404);
+    throw new Error('Accommodation not found.');
+  }
+});
+
+// @desc    Unlock the accommodation for given date range
+// @route   DELETE /api/bookings/lock/:id
+// @access  Private
+const unlockDateRange = asyncHandler(async (req, res) => {
+  const booking = await Booking.findById(req.params.id);
+
+  if (!booking) {
+    res.status(404);
+    throw new Error('Locked date range not found.');
+  }
+
+  await booking.remove().catch((err) => console.error(err));
+  res.status(200).json({ message: 'Date range unlocked.' });
+});
+
 export {
   createBooking,
   getBookingById,
@@ -159,4 +203,6 @@ export {
   getBookings,
   createReview,
   getOwnerBookings,
+  lockDateRange,
+  unlockDateRange,
 };
