@@ -3,7 +3,11 @@ import axios from 'axios';
 import { Col, Row, Form, Button } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { PayPalButton } from 'react-paypal-button-v2';
-import { getBookingDetails, payBooking } from '../actions/bookingActions';
+import {
+  cancelBooking,
+  getBookingDetails,
+  payBooking,
+} from '../actions/bookingActions';
 import { createAccommodationReview } from '../actions/accommodationActions';
 import { ACCOMMODATION_CREATE_REVIEW_RESET } from '../constants/accommodationConstants';
 import Accommodation from '../components/Accommodation';
@@ -101,6 +105,15 @@ const PaymentScreen = ({ match, history }) => {
     );
   };
 
+  const cancelReservationHandler = (e) => {
+    e.preventDefault();
+    if (window.confirm('Are you sure you want to cancel this reservation?')) {
+      dispatch(cancelBooking(bookingId));
+      dispatch(getBookingDetails(bookingId));
+    }
+    dispatch(getBookingDetails(bookingId));
+  };
+
   return (
     <>
       {loading ? (
@@ -156,7 +169,8 @@ const PaymentScreen = ({ match, history }) => {
               <Row>
                 <span>{booking.paymentMethod}</span>
               </Row>
-              {!booking.isPaid && userInfo._id === booking.user._id ? (
+              {booking.status === 'PENDING' &&
+              userInfo._id === booking.user._id ? (
                 <>
                   <Row className='mt-2'>
                     {loadingPay && <Loader />}
@@ -168,6 +182,16 @@ const PaymentScreen = ({ match, history }) => {
                         onSuccess={successPaymentHandler}
                       />
                     )}
+                  </Row>
+                  <Row>
+                    <div className='d-grid gap-2 mt-2'>
+                      <Button
+                        variant='primary'
+                        onClick={(e) => cancelReservationHandler(e)}
+                      >
+                        Cancel Reservation
+                      </Button>
+                    </div>
                   </Row>
                 </>
               ) : booking.isPaid ? (
@@ -182,10 +206,12 @@ const PaymentScreen = ({ match, history }) => {
               ) : (
                 <>
                   <Row className='mt-2'>
-                    <h6>Payment Status</h6>
+                    <h6>Status</h6>
                   </Row>
                   <Row>
-                    <span>Not Paid</span>
+                    <span>
+                      {booking.status === 'PENDING' ? 'Not Paid' : 'Cancelled'}
+                    </span>
                   </Row>
                 </>
               )}

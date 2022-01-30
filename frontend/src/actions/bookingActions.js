@@ -25,6 +25,9 @@ import {
   BOOKING_UNLOCK_DATES_REQUEST,
   BOOKING_UNLOCK_DATES_SUCCESS,
   BOOKING_UNLOCK_DATES_FAIL,
+  BOOKING_CANCEL_REQUEST,
+  BOOKING_CANCEL_SUCCESS,
+  BOOKING_CANCEL_FAIL,
 } from '../constants/bookingConstants';
 
 export const savePaymentMethod = (paymentMethod) => (dispatch) => {
@@ -295,6 +298,34 @@ export const unlockDates = (id) => async (dispatch, getState) => {
   } catch (error) {
     dispatch({
       type: BOOKING_UNLOCK_DATES_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+
+export const cancelBooking = (id) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: BOOKING_CANCEL_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    const { data } = await axios.put(`/api/bookings/cancel/${id}`, {}, config);
+
+    dispatch({ type: BOOKING_CANCEL_SUCCESS, payload: data });
+  } catch (error) {
+    dispatch({
+      type: BOOKING_CANCEL_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message

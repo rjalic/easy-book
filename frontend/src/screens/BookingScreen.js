@@ -9,7 +9,7 @@ import { createBooking } from '../actions/bookingActions';
 import { DateHelper } from '../utils/dateUtils';
 
 const BookingScreen = ({ history, match, location }) => {
-  const [paymentMethod, setPaymentMethod] = useState('PayPal');
+  const [paymentMethod, setPaymentMethod] = useState('PayPal/DC/CC');
   const [bookedFrom, setBookedFrom] = useState(new Date());
   const [bookedTo, setBookedTo] = useState(new Date());
   const [totalPrice, setTotalPrice] = useState(0);
@@ -159,7 +159,7 @@ const BookingScreen = ({ history, match, location }) => {
                         label='PayPal or Credit Cart'
                         id='PayPal'
                         name='paymentMethod'
-                        value='PayPal'
+                        value='PayPal/DC/CC'
                         checked
                         onChange={(e) => setPaymentMethod(e.target.value)}
                       ></Form.Check>

@@ -131,34 +131,36 @@ const ProfileScreen = ({ history }) => {
                 <th>FROM</th>
                 <th>TO</th>
                 <th>TOTAL</th>
-                <th>PAID</th>
+                <th>STATUS</th>
                 <th>ACTIONS</th>
               </tr>
             </thead>
             <tbody>
-              {bookings.map((booking) => (
-                <tr key={booking._id}>
-                  <td>{booking.accommodation.name}</td>
-                  <td>{new Date(booking.bookedFrom).toDateString()}</td>
-                  <td>{new Date(booking.bookedTo).toDateString()}</td>
-                  <td>${booking.totalPrice}</td>
-                  <td>
-                    {booking.isPaid ? (
-                      new Date(booking.paidAt).toDateString()
-                    ) : (
-                      <i className='fas fa-times' style={{ color: 'red' }}></i>
-                    )}
-                  </td>
-                  <td>
-                    <Link
-                      to={`/bookings/${booking._id}`}
-                      className='btn btn-primary btn-sm'
-                    >
-                      <i className='fas fa-angle-right'></i>
-                    </Link>
-                  </td>
-                </tr>
-              ))}
+              {bookings
+                .filter((booking) => booking.status !== 'LOCKED')
+                .map((booking) => (
+                  <tr key={booking._id}>
+                    <td>{booking.accommodation.name}</td>
+                    <td>{new Date(booking.bookedFrom).toDateString()}</td>
+                    <td>{new Date(booking.bookedTo).toDateString()}</td>
+                    <td>${booking.totalPrice}</td>
+                    <td>
+                      {booking.isPaid
+                        ? 'Paid'
+                        : booking.status === 'PENDING'
+                        ? 'Not Paid'
+                        : 'Cancelled'}
+                    </td>
+                    <td>
+                      <Link
+                        to={`/bookings/${booking._id}`}
+                        className='btn btn-primary btn-sm'
+                      >
+                        <i className='fas fa-angle-right'></i>
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
             </tbody>
           </Table>
         )}

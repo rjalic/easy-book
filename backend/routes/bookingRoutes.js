@@ -9,6 +9,7 @@ import {
   updateBookingToPaid,
   lockDateRange,
   unlockDateRange,
+  cancelBooking,
 } from '../controllers/bookingController.js';
 import { protect, isAdmin } from '../middleware/authMiddleware.js';
 
@@ -24,6 +25,7 @@ router
   .route('/lock/:id')
   .post(protect, lockDateRange)
   .delete(protect, unlockDateRange);
+router.route('/cancel/:id').put(protect, cancelBooking);
 router.route('/:id/review').post(protect, createReview);
 router.route('/:id').get(protect, getBookingById);
 router.route('/:id/pay').put(protect, updateBookingToPaid);

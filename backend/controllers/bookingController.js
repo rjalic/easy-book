@@ -195,6 +195,28 @@ const unlockDateRange = asyncHandler(async (req, res) => {
   res.status(200).json({ message: 'Date range unlocked.' });
 });
 
+// @desc    Cancel the booking
+// @route   PUT /api/bookings/cancel/:id
+// @access  Private
+const cancelBooking = asyncHandler(async (req, res) => {
+  const booking = await Booking.findById(req.params.id);
+
+  if (booking) {
+    if (booking.user.toString() !== req.user.id && !req.user.isAdmin) {
+      res.status(401);
+      throw new Error('Not authorized to cancel this booking.');
+    }
+
+    booking.status = 'CANCELLED';
+
+    await booking.save().catch((err) => console.error(err));
+    res.status(200).json({ message: 'Booking cancelled.' });
+  } else {
+    res.status(404);
+    throw new Error('Booking not found.');
+  }
+});
+
 export {
   createBooking,
   getBookingById,
@@ -205,4 +227,5 @@ export {
   getOwnerBookings,
   lockDateRange,
   unlockDateRange,
+  cancelBooking,
 };

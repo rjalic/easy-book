@@ -191,19 +191,21 @@ const getTakenDates = asyncHandler(async (req, res) => {
 
   if (bookings) {
     bookings.forEach((booking) => {
-      const fromDate = new Date(booking.bookedFrom);
-      const toDate = new Date(booking.bookedTo);
-      let temp = new Date(fromDate);
-      while (true) {
-        if (
-          temp.getFullYear() === toDate.getFullYear() &&
-          temp.getMonth() === toDate.getMonth() &&
-          temp.getDate() === toDate.getDate()
-        ) {
-          break;
-        } else {
-          dates = dates.add(new Date(temp).toISOString());
-          temp.setDate(temp.getDate() + 1);
+      if (booking.status !== 'CANCELLED') {
+        const fromDate = new Date(booking.bookedFrom);
+        const toDate = new Date(booking.bookedTo);
+        let temp = new Date(fromDate);
+        while (true) {
+          if (
+            temp.getFullYear() === toDate.getFullYear() &&
+            temp.getMonth() === toDate.getMonth() &&
+            temp.getDate() === toDate.getDate()
+          ) {
+            break;
+          } else {
+            dates = dates.add(new Date(temp).toISOString());
+            temp.setDate(temp.getDate() + 1);
+          }
         }
       }
     });

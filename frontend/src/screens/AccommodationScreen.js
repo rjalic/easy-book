@@ -53,7 +53,7 @@ const AccommodationScreen = ({ match }) => {
     } else {
       setValidRange(true);
     }
-  }, [dispatch, match, value, accommodation.name, taken]);
+  }, [dispatch, match, value, accommodation.name]);
 
   const lockHandler = (e) => {
     e.preventDefault();
@@ -71,6 +71,7 @@ const AccommodationScreen = ({ match }) => {
           DateHelper.toIsoDate(value[0].endDate)
         )
       );
+      dispatch(getTakenDates(match.params.id));
     }
     dispatch(getTakenDates(match.params.id));
     setValue([
