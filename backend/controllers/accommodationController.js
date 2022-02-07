@@ -35,6 +35,24 @@ const getAccommodations = asyncHandler(async (req, res) => {
     rating: { $gte: rating },
   });
 
+  const distinctLocations = await Accommodation.distinct(
+    'location',
+    function (error, result) {
+      if (error) {
+        console.error(error);
+      }
+    }
+  );
+
+  const locationSet = new Set();
+
+  distinctLocations.forEach((location) => {
+    locationSet.add(location.country);
+    locationSet.add(location.city + '+' + location.country);
+  });
+
+  const locations = [...locationSet];
+
   const accommodations = await Accommodation.find({ ...keyword })
     .where('capacity')
     .gte(capacity)
@@ -53,7 +71,12 @@ const getAccommodations = asyncHandler(async (req, res) => {
     .limit(pageSize)
     .skip(pageSize * (page - 1));
 
-  res.json({ accommodations, page, pages: Math.ceil(count / pageSize) });
+  res.json({
+    accommodations,
+    page,
+    pages: Math.ceil(count / pageSize),
+    locations,
+  });
 });
 
 // @desc    Get current user's accommodations

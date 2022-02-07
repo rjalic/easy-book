@@ -43,6 +43,7 @@ export const accommodationListReducer = (
         accommodations: action.payload.accommodations,
         pages: action.payload.pages,
         page: action.payload.page,
+        locations: action.payload.locations,
       };
     case ACCOMMODATION_LIST_FAIL:
       return { loading: false, error: action.payload };

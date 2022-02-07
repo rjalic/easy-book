@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
+import Select from 'react-select';
 import { Form, Button, Row, Col } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 
-const SearchBar = ({ history }) => {
+const SearchBar = ({ history, locations }) => {
   const [keyword, setKeyword] = useState('');
   const [capacity, setCapacity] = useState(1);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
-  const [city, setCity] = useState('');
-  const [country, setCountry] = useState('');
   const [rating, setRating] = useState(0);
+  const [selectedOption, setSelectedOption] = useState(null);
 
   const submitHandler = (e) => {
     e.preventDefault();
@@ -25,11 +26,14 @@ const SearchBar = ({ history }) => {
     if (maxPrice > 0 && maxPrice > minPrice) {
       queryParams.push(`maxPrice=${maxPrice}`);
     }
-    if (city.trim()) {
-      queryParams.push(`city=${city}`);
-    }
-    if (country.trim()) {
-      queryParams.push(`country=${country}`);
+    if (selectedOption !== null) {
+      if (selectedOption.value.includes('+')) {
+        const cityAndCountry = selectedOption.value.split('+');
+        queryParams.push(`city=${cityAndCountry[0]}`);
+        queryParams.push(`country=${cityAndCountry[1]}`);
+      } else {
+        queryParams.push(`country=${selectedOption.value}`);
+      }
     }
     if (rating > 0) {
       queryParams.push(`rating=${rating}`);
@@ -100,23 +104,19 @@ const SearchBar = ({ history }) => {
         </Form.Group>
       </Row>
       <Form.Group>
-        <Form.Label>City</Form.Label>
-        <Form.Control
-          type='text'
-          name='city'
-          onChange={(e) => setCity(e.target.value)}
-          placeholder='Search by city'
-          className='mr-sm-2 ml-sm-5'
-        />
-      </Form.Group>
-      <Form.Group>
-        <Form.Label>Country</Form.Label>
-        <Form.Control
-          type='text'
-          name='country'
-          onChange={(e) => setCountry(e.target.value)}
-          placeholder='Search by country'
-          className='mr-sm-2 ml-sm-5'
+        <Form.Label>Location</Form.Label>
+        <Select
+          defaultValue={selectedOption}
+          onChange={setSelectedOption}
+          options={
+            locations &&
+            locations.map((location) => ({
+              value: location,
+              label: location.replace('+', ', '),
+            }))
+          }
+          isSearchable={true}
+          isClearable={true}
         />
       </Form.Group>
       <Form.Group>
@@ -137,6 +137,10 @@ const SearchBar = ({ history }) => {
       </div>
     </Form>
   );
+};
+
+SearchBar.prototype = {
+  locations: PropTypes.array.isRequired,
 };
 
 export default SearchBar;

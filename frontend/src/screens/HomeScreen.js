@@ -14,7 +14,8 @@ const HomeScreen = ({ history }) => {
   const dispatch = useDispatch();
 
   const accommodationList = useSelector((state) => state.accommodationList);
-  const { loading, error, accommodations, page, pages } = accommodationList;
+  const { loading, error, accommodations, page, pages, locations } =
+    accommodationList;
 
   let currentQuery = useLocation().search;
 
@@ -40,7 +41,7 @@ const HomeScreen = ({ history }) => {
         <>
           <Row>
             <Col sm={3}>
-              <SearchBar history={history} />
+              <SearchBar history={history} locations={locations} />
             </Col>
             <Col sm={9}>
               {!loading && pages === 0 ? (
