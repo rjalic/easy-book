@@ -209,7 +209,10 @@ const updateAccommodation = asyncHandler(async (req, res) => {
 // @route   GET /api/accommodations/:id/taken
 // @access  Public
 const getTakenDates = asyncHandler(async (req, res) => {
-  const bookings = await Booking.find({ accommodation: req.params.id });
+  const bookings = await Booking.find({
+    accommodation: req.params.id,
+    status: { $ne: 'CANCELLED' },
+  });
   let dates = new Set();
 
   if (bookings) {
@@ -234,7 +237,33 @@ const getTakenDates = asyncHandler(async (req, res) => {
     });
   }
 
-  res.json(Array.from(dates));
+  dates = [...dates].sort((a, b) => {
+    return new Date(a) - new Date(b);
+  });
+
+  const checkoutOnlyDates = new Set();
+  dates.forEach((date, index) => {
+    if (
+      !dates.includes(
+        new Date(
+          new Date(date).setDate(new Date(date).getDate() - 1)
+        ).toISOString()
+      ) &&
+      dates.includes(
+        new Date(
+          new Date(date).setDate(new Date(date).getDate() + 1)
+        ).toISOString()
+      )
+    ) {
+      checkoutOnlyDates.add(date);
+      dates.splice(index, 1);
+    }
+  });
+
+  res.json({
+    takenDates: [...dates],
+    checkoutOnlyDates: [...checkoutOnlyDates],
+  });
 });
 
 export {

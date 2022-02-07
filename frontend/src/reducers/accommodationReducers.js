@@ -165,7 +165,13 @@ export const accommodationTakenReducer = (state = { taken: [] }, action) => {
     case ACCOMMODATION_TAKEN_REQUEST:
       return { loading: true, taken: [] };
     case ACCOMMODATION_TAKEN_SUCCESS:
-      return { loading: false, taken: action.payload };
+      return {
+        loading: false,
+        taken: action.payload.takenDates,
+        checkoutOnly: action.payload.checkoutOnlyDates?.map(
+          (date) => new Date(date)
+        ),
+      };
     case ACCOMMODATION_TAKEN_FAIL:
       return { loading: false, error: action.payload };
     default:

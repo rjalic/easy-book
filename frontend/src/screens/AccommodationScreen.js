@@ -12,6 +12,7 @@ import { lockDates } from '../actions/bookingActions';
 import { DateHelper } from '../utils/dateUtils';
 import { LinkContainer } from 'react-router-bootstrap';
 import { DateRange } from 'react-date-range';
+import { format } from 'date-fns';
 
 const AccommodationScreen = ({ match }) => {
   const [isValidRange, setValidRange] = useState(false);
@@ -34,7 +35,7 @@ const AccommodationScreen = ({ match }) => {
   const { userInfo } = userLogin;
 
   const accommodationTaken = useSelector((state) => state.accommodationTaken);
-  const { taken } = accommodationTaken;
+  const { taken, checkoutOnly } = accommodationTaken;
 
   useEffect(() => {
     if (!accommodation.name) {
@@ -81,6 +82,41 @@ const AccommodationScreen = ({ match }) => {
         key: 'selection',
       },
     ]);
+  };
+
+  const customDayContent = (day) => {
+    let extraDot = null;
+    const dateInArr = (day, dates) => dates.some((d) => +d === +day);
+    if (checkoutOnly && dateInArr(day, checkoutOnly)) {
+      extraDot = (
+        <div
+          style={{
+            height: '5px',
+            width: '5px',
+            borderRadius: '100%',
+            background: 'var(--bs-dark)',
+            position: 'absolute',
+            top: 5,
+            right: 10,
+          }}
+        />
+      );
+    }
+    return (
+      <div>
+        {extraDot}
+        <span>{format(day, 'd')}</span>
+      </div>
+    );
+  };
+
+  const setDate = (item) => {
+    const newStartDate = item.selection.startDate;
+    const isNotCheckoutOnly = (newStartDate, dates) =>
+      !dates.some((d) => +d === +newStartDate);
+    if (checkoutOnly && isNotCheckoutOnly(newStartDate, checkoutOnly)) {
+      setValue([item.selection]);
+    }
   };
 
   return (
@@ -173,17 +209,15 @@ const AccommodationScreen = ({ match }) => {
                     </Col>
                     <Col>
                       <DateRange
-                        // editableDateInputs={true}
-                        onChange={(item) => setValue([item.selection])}
-                        moveRangeOnFirstSelection={false}
+                        onChange={(item) => setDate(item)}
+                        preventSnapRefocus={true}
                         ranges={value}
                         minDate={new Date()}
                         disabledDates={taken.map(
                           (d) => new Date(Date.parse(d))
                         )}
                         weekStartsOn={1}
-                        // months={2}
-                        // direction={'horizontal'}
+                        dayContentRenderer={customDayContent}
                       />
                     </Col>
                   </Row>
@@ -237,7 +271,7 @@ const AccommodationScreen = ({ match }) => {
                   {!isValidRange || !userInfo ? (
                     <div className='d-grid gap-2 mt-2'>
                       <Button variant='primary' disabled>
-                        {accommodation.host === userInfo._id
+                        {accommodation.host === userInfo?._id
                           ? 'Lock'
                           : 'Reserve'}
                       </Button>
