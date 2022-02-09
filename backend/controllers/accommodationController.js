@@ -244,16 +244,26 @@ const getTakenDates = asyncHandler(async (req, res) => {
   const checkoutOnlyDates = new Set();
   dates.forEach((date, index) => {
     if (
-      !dates.includes(
+      (!dates.includes(
         new Date(
           new Date(date).setDate(new Date(date).getDate() - 1)
         ).toISOString()
       ) &&
-      dates.includes(
+        dates.includes(
+          new Date(
+            new Date(date).setDate(new Date(date).getDate() + 1)
+          ).toISOString()
+        )) ||
+      (!dates.includes(
         new Date(
-          new Date(date).setDate(new Date(date).getDate() + 1)
+          new Date(date).setDate(new Date(date).getDate() - 1)
         ).toISOString()
-      )
+      ) &&
+        !dates.includes(
+          new Date(
+            new Date(date).setDate(new Date(date).getDate() + 1)
+          ).toISOString()
+        ))
     ) {
       checkoutOnlyDates.add(date);
       dates.splice(index, 1);
