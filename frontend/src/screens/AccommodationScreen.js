@@ -12,7 +12,7 @@ import { lockDates } from '../actions/bookingActions';
 import { DateHelper } from '../utils/dateUtils';
 import { LinkContainer } from 'react-router-bootstrap';
 import { DateRange } from 'react-date-range';
-import { format } from 'date-fns';
+import { format, isSameDay } from 'date-fns';
 
 const AccommodationScreen = ({ match }) => {
   const [isValidRange, setValidRange] = useState(false);
@@ -42,19 +42,7 @@ const AccommodationScreen = ({ match }) => {
       dispatch(listAccommodationDetails(match.params.id, true));
       dispatch(getTakenDates(match.params.id));
     }
-    if (
-      new Date(value[0].startDate).getFullYear() ===
-        new Date(value[0].endDate).getFullYear() &&
-      new Date(value[0].startDate).getMonth() ===
-        new Date(value[0].endDate).getMonth() &&
-      new Date(value[0].startDate).getDate() ===
-        new Date(value[0].endDate).getDate()
-    ) {
-      setValidRange(false);
-    } else {
-      setValidRange(true);
-    }
-  }, [dispatch, match, value, accommodation.name]);
+  }, [dispatch, match, accommodation.name, isValidRange]);
 
   const lockHandler = (e) => {
     e.preventDefault();
@@ -110,12 +98,38 @@ const AccommodationScreen = ({ match }) => {
     );
   };
 
+  const rangeContainsCheckoutOnlyDate = (start, end) => {
+    let temp = new Date(start);
+    while (!isSameDay(temp, end)) {
+      for (let i = 0; i < checkoutOnly.length; i++) {
+        if (isSameDay(temp, checkoutOnly[i])) {
+          return true;
+        }
+      }
+      temp.setDate(temp.getDate() + 1);
+    }
+    return false;
+  };
+
   const setDate = (item) => {
     const newStartDate = item.selection.startDate;
     const isNotCheckoutOnly = (newStartDate, dates) =>
       !dates.some((d) => +d === +newStartDate);
-    if (checkoutOnly && isNotCheckoutOnly(newStartDate, checkoutOnly)) {
+    if (
+      checkoutOnly &&
+      isNotCheckoutOnly(newStartDate, checkoutOnly) &&
+      !rangeContainsCheckoutOnlyDate(
+        item.selection.startDate,
+        item.selection.endDate
+      )
+    ) {
+      setValidRange(true);
       setValue([item.selection]);
+    } else {
+      setValidRange(false);
+    }
+    if (isSameDay(item.selection.startDate, item.selection.endDate)) {
+      setValidRange(false);
     }
   };
 
@@ -220,6 +234,11 @@ const AccommodationScreen = ({ match }) => {
                         dayContentRenderer={customDayContent}
                       />
                     </Col>
+                  </Row>
+                  <Row>
+                    <span className='fs-7'>
+                      * Dates marked with a black dot are for checkout only.
+                    </span>
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
