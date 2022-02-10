@@ -59,6 +59,7 @@ const updateBookingToPaid = asyncHandler(async (req, res) => {
 
   if (booking) {
     booking.isPaid = true;
+    booking.status = 'PAID';
     booking.paidAt = new Date().toISOString();
     booking.paymentResult = {
       id: req.body.id,

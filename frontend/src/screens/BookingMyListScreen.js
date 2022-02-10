@@ -85,7 +85,7 @@ const BookingOwnerListScreen = ({ history }) => {
                 <td>
                   {booking.status === 'LOCKED' ? (
                     <Button
-                      className='btn-sm'
+                      className='btn btn-primary btn-sm m-1'
                       onClick={(e) => unlockHandler(e, booking._id)}
                     >
                       <i className='fas fa-unlock-alt'></i>
