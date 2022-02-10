@@ -244,9 +244,9 @@ const AccommodationEditScreen = ({ match, history }) => {
                         accommodation.amenities.includes(amenityItem._id)
                       }
                       onChange={(e) => {
-                        let temp = amenities;
+                        let temp = [...amenities];
                         if (temp.includes(amenityItem._id)) {
-                          temp = temp.splice(temp.indexOf(amenityItem._id), 1);
+                          temp.splice(temp.indexOf(amenityItem._id), 1);
                         } else {
                           temp.push(amenityItem._id);
                         }
