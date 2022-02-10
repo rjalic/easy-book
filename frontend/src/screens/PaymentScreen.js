@@ -171,29 +171,17 @@ const PaymentScreen = ({ match, history }) => {
               </Row>
               {booking.status === 'PENDING' &&
               userInfo._id === booking.user._id ? (
-                <>
-                  <Row className='mt-2'>
-                    {loadingPay && <Loader />}
-                    {!sdkReady ? (
-                      <Loader />
-                    ) : (
-                      <PayPalButton
-                        amount={booking.totalPrice}
-                        onSuccess={successPaymentHandler}
-                      />
-                    )}
-                  </Row>
-                  <Row>
-                    <div className='d-grid gap-2 mt-2'>
-                      <Button
-                        variant='primary'
-                        onClick={(e) => cancelReservationHandler(e)}
-                      >
-                        Cancel Reservation
-                      </Button>
-                    </div>
-                  </Row>
-                </>
+                <Row className='mt-2'>
+                  {loadingPay && <Loader />}
+                  {!sdkReady ? (
+                    <Loader />
+                  ) : (
+                    <PayPalButton
+                      amount={booking.totalPrice}
+                      onSuccess={successPaymentHandler}
+                    />
+                  )}
+                </Row>
               ) : booking.isPaid ? (
                 <>
                   <Row className='mt-2'>
@@ -214,6 +202,18 @@ const PaymentScreen = ({ match, history }) => {
                     </span>
                   </Row>
                 </>
+              )}
+              {booking.status === 'PENDING' && (
+                <Row>
+                  <div className='d-grid gap-2 mt-2'>
+                    <Button
+                      variant='primary'
+                      onClick={(e) => cancelReservationHandler(e)}
+                    >
+                      Cancel Reservation
+                    </Button>
+                  </div>
+                </Row>
               )}
               {booking.isReviewed && userInfo._id === booking.user._id ? (
                 <Row className='mt-2 mx-1'>
