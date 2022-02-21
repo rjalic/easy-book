@@ -14,7 +14,7 @@ import { LinkContainer } from 'react-router-bootstrap';
 import { DateRange } from 'react-date-range';
 import { format, isSameDay } from 'date-fns';
 
-const AccommodationScreen = ({ match }) => {
+const AccommodationScreen = ({ location, match }) => {
   const [isValidRange, setValidRange] = useState(false);
   const [value, setValue] = useState([
     {
@@ -287,7 +287,15 @@ const AccommodationScreen = ({ match }) => {
                   </Row>
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  {!isValidRange || !userInfo ? (
+                  {!userInfo ? (
+                    <div className='d-grid gap-2 mt-2'>
+                      <LinkContainer
+                        to={`/login?redirect=${location.pathname}`}
+                      >
+                        <Button variant='primary'>Sign In</Button>
+                      </LinkContainer>
+                    </div>
+                  ) : !isValidRange ? (
                     <div className='d-grid gap-2 mt-2'>
                       <Button variant='primary' disabled>
                         {accommodation.host === userInfo?._id
