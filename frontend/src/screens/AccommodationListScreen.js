@@ -7,7 +7,6 @@ import Message from '../components/Message';
 import Loader from '../components/Loader';
 import Paginate from '../components/Paginate';
 import {
-  createAccommodation,
   deleteAccommodation,
   listAccommodations,
 } from '../actions/accommodationActions';
@@ -78,10 +77,6 @@ const AccommodationListScreen = ({ history }) => {
     }
   };
 
-  const createAccommodationHandler = () => {
-    dispatch(createAccommodation());
-  };
-
   return (
     <>
       <Row className='align-items-center'>
@@ -89,9 +84,11 @@ const AccommodationListScreen = ({ history }) => {
           <h1>Accommodations</h1>
         </Col>
         <Col className='text-end'>
-          <Button className='my-3' onClick={createAccommodationHandler}>
-            <i className='fas fa-plus'></i> Create Accommodation
-          </Button>
+          <LinkContainer to='/createAccommodation' className='my-3 mx-1'>
+            <Button>
+              <i className='fas fa-plus' /> Create Accommodation
+            </Button>
+          </LinkContainer>
         </Col>
       </Row>
       {loadingDelete && <Loader />}
