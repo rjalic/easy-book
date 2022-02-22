@@ -42,7 +42,7 @@ const AccommodationScreen = ({ location, match }) => {
       dispatch(listAccommodationDetails(match.params.id, true));
       dispatch(getTakenDates(match.params.id));
     }
-  }, [dispatch, match, accommodation.name, isValidRange]);
+  }, [dispatch, match.params.id, accommodation.name, isValidRange]);
 
   const lockHandler = (e) => {
     e.preventDefault();
@@ -60,16 +60,15 @@ const AccommodationScreen = ({ location, match }) => {
           DateHelper.toIsoDate(value[0].endDate)
         )
       );
-      dispatch(getTakenDates(match.params.id));
+      setValue([
+        {
+          startDate: new Date(),
+          endDate: new Date(),
+          key: 'selection',
+        },
+      ]);
+      window.location.reload();
     }
-    dispatch(getTakenDates(match.params.id));
-    setValue([
-      {
-        startDate: new Date(),
-        endDate: new Date(),
-        key: 'selection',
-      },
-    ]);
   };
 
   const customDayContent = (day) => {
