@@ -10,13 +10,13 @@ import RegisterScreen from './screens/RegisterScreen';
 import ProfileScreen from './screens/ProfileScreen';
 import BookingScreen from './screens/BookingScreen';
 import PaymentScreen from './screens/PaymentScreen';
-import UserListScreen from './screens/UserListScreen';
+import UserListScreen from './screens/admin/UserListScreen';
 import UserEditScreen from './screens/UserEditScreen';
-import AccommodationListScreen from './screens/AccommodationListScreen';
+import AccommodationListScreen from './screens/admin/AccommodationListScreen';
 import AccommodationEditScreen from './screens/AccommodationEditScreen';
 import AccommodationCreateScreen from './screens/AccommodationCreateScreen';
-import BookingListScreen from './screens/BookingListScreen';
-import AmenityListScreen from './screens/AmenityListScreen';
+import BookingListScreen from './screens/admin/BookingListScreen';
+import AmenityListScreen from './screens/admin/AmenityListScreen';
 import AccommodationMyListScreen from './screens/AccommodationMyListScreen';
 import BookingOwnerListScreen from './screens/BookingMyListScreen';
 

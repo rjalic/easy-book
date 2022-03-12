@@ -8,7 +8,7 @@ import mongoose from 'mongoose';
 // @route   GET /api/accommodations
 // @access  Public
 const getAccommodations = asyncHandler(async (req, res) => {
-  const pageSize = 10;
+  const pageSize = 5;
   const page = Number(req.query.pageNumber) || 1;
   const capacity = Number(req.query.capacity) || 1;
   const minPrice = Number(req.query.minPrice) || 0;
