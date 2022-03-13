@@ -17,7 +17,7 @@ export const ColumnFilter = ({ column }) => {
           setValue(e.target.value);
           onChange(e.target.value);
         }}
-        onFocus={(e) => e.preventDefault()}
+        className='form-control form-control-sm'
       />
     </span>
   );

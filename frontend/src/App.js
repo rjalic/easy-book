@@ -17,8 +17,8 @@ import AccommodationEditScreen from './screens/AccommodationEditScreen';
 import AccommodationCreateScreen from './screens/AccommodationCreateScreen';
 import BookingListScreen from './screens/admin/BookingListScreen';
 import AmenityListScreen from './screens/admin/AmenityListScreen';
-import AccommodationMyListScreen from './screens/AccommodationMyListScreen';
-import BookingOwnerListScreen from './screens/BookingMyListScreen';
+import AccommodationMyListScreen from './screens/host/AccommodationMyListScreen';
+import BookingOwnerListScreen from './screens/host/BookingMyListScreen';
 
 const App = () => {
   return (

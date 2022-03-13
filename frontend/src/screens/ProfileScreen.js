@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Form, Button, Row, Col, Table } from 'react-bootstrap';
+import { Form, Button, Row, Col } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import Message from '../components/Message';
 import Loader from '../components/Loader';
@@ -8,6 +7,7 @@ import { getUserDetails, updateUserProfile } from '../actions/userActions';
 import { listMyBookings } from '../actions/bookingActions';
 import NotFound from '../components/NotFound';
 import { USER_UPDATE_PROFILE_RESET } from '../constants/userConstants';
+import { MyBookingsTable } from '../components/tables/MyBookingsTable';
 
 const ProfileScreen = ({ history }) => {
   const [name, setName] = useState('');
@@ -124,45 +124,7 @@ const ProfileScreen = ({ history }) => {
             redirectBtn={'Explore!'}
           />
         ) : (
-          <Table striped bordered hover responsive className='table-sm'>
-            <thead>
-              <tr>
-                <th>NAME</th>
-                <th>FROM</th>
-                <th>TO</th>
-                <th>TOTAL</th>
-                <th>STATUS</th>
-                <th>ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bookings
-                .filter((booking) => booking.status !== 'LOCKED')
-                .map((booking) => (
-                  <tr key={booking._id}>
-                    <td>{booking.accommodation.name}</td>
-                    <td>{new Date(booking.bookedFrom).toDateString()}</td>
-                    <td>{new Date(booking.bookedTo).toDateString()}</td>
-                    <td>${booking.totalPrice}</td>
-                    <td>
-                      {booking.isPaid
-                        ? 'Paid'
-                        : booking.status === 'PENDING'
-                        ? 'Not Paid'
-                        : 'Cancelled'}
-                    </td>
-                    <td>
-                      <Link
-                        to={`/bookings/${booking._id}`}
-                        className='btn btn-primary btn-sm'
-                      >
-                        <i className='fas fa-angle-right'></i>
-                      </Link>
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </Table>
+          <MyBookingsTable bookings={bookings} />
         )}
       </Col>
     </Row>

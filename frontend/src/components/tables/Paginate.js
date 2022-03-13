@@ -31,7 +31,8 @@ export const Paginate = ({
                 : 0;
               gotoPage(pageNumber);
             }}
-            style={{ width: '50px' }}
+            style={{ width: '50px', display: 'inline-block' }}
+            className='form-control form-control-sm'
           />
         </span>
       </div>
