@@ -1,15 +1,31 @@
 import React, { useMemo } from 'react';
-import { useTable, useFilters, useSortBy } from 'react-table';
+import { useTable, useFilters, useSortBy, usePagination } from 'react-table';
 import { Link } from 'react-router-dom';
 import { Table } from 'react-bootstrap';
 import { BOOKING_TABLE_COLUMNS } from '../../constants/table_columns/bookingTableColumns';
+import { Paginate } from './Paginate';
 
 export const BookingTable = ({ bookings }) => {
   const columns = useMemo(() => BOOKING_TABLE_COLUMNS, []);
   const data = useMemo(() => bookings, [bookings]);
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable({ columns, data }, useFilters, useSortBy);
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    page,
+    previousPage,
+    nextPage,
+    canPreviousPage,
+    canNextPage,
+    pageOptions,
+    gotoPage,
+    pageCount,
+    state,
+    prepareRow,
+  } = useTable({ columns, data }, useFilters, useSortBy, usePagination);
+
+  const { pageIndex } = state;
 
   return (
     <>
@@ -44,7 +60,7 @@ export const BookingTable = ({ bookings }) => {
           ))}
         </thead>
         <tbody {...getTableBodyProps()}>
-          {rows.map((row) => {
+          {page.map((row) => {
             prepareRow(row);
             return (
               <tr {...row.getRowProps()}>
@@ -79,6 +95,16 @@ export const BookingTable = ({ bookings }) => {
           })}
         </tbody>
       </Table>
+      <Paginate
+        pageIndex={pageIndex}
+        pageOptions={pageOptions}
+        pageCount={pageCount}
+        gotoPage={gotoPage}
+        canPreviousPage={canPreviousPage}
+        canNextPage={canNextPage}
+        previousPage={previousPage}
+        nextPage={nextPage}
+      />
     </>
   );
 };
