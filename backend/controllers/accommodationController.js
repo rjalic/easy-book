@@ -23,7 +23,7 @@ const getAccommodations = asyncHandler(async (req, res) => {
     });
   }
 
-  const pageSize = 5;
+  const pageSize = 10;
   const capacity = Number(req.query.capacity) || 1;
   const minPrice = Number(req.query.minPrice) || 0;
   const maxPrice = Number(req.query.maxPrice) || Number.MAX_SAFE_INTEGER;
