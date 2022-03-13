@@ -59,7 +59,7 @@ const AccommodationListScreen = ({ history }) => {
     if (successCreate) {
       history.push(`/accommodations/${createdAccommodation._id}/edit`);
     } else {
-      dispatch(listAccommodations('', pageNumber));
+      dispatch(listAccommodations('', '-1'));
     }
   }, [
     dispatch,
