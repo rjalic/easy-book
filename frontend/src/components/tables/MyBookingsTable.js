@@ -42,16 +42,18 @@ export const MyBookingsTable = ({ bookings }) => {
             <tr {...headerGroup.getHeaderGroupProps()}>
               {headerGroup.headers.map((column) => (
                 <th {...column.getHeaderProps()}>
-                  <span {...column.getSortByToggleProps()}>
-                    {column.render('Header')}
-                  </span>
-                  <span>
-                    {column.isSorted
-                      ? column.isSortedDesc
-                        ? ' 🔽'
-                        : ' 🔼'
-                      : ''}
-                  </span>
+                  <div className='table-header-extra'>
+                    <span {...column.getSortByToggleProps()}>
+                      {column.render('Header')}
+                    </span>
+                    <span>
+                      {column.isSorted
+                        ? column.isSortedDesc
+                          ? ' 🔽'
+                          : ' 🔼'
+                        : ''}
+                    </span>
+                  </div>
                   <div>{column.canFilter ? column.render('Filter') : null}</div>
                 </th>
               ))}

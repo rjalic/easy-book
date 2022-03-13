@@ -31,3 +31,8 @@ div {
 .badge {
   color: var(--bs-dark);
 }
+
+.table-header-extra {
+  display: flex;
+  min-width: 120px;
+}
